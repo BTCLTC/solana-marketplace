@@ -8,7 +8,6 @@ use crate::{
 };
 
 #[derive(Accounts)]
-#[instruction(_token_type: u8)]
 pub struct CloseSell<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
@@ -70,7 +69,7 @@ pub struct CloseSell<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-pub fn close_sell_handler(ctx: Context<CloseSell>, _token_type: u8) -> Result<()> {
+pub fn close_sell_handler(ctx: Context<CloseSell>) -> Result<()> {
     let mut config = ctx.accounts.config.load_mut()?;
     // Transfer nft to user from vault
     {

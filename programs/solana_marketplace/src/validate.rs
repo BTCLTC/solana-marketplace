@@ -23,9 +23,6 @@ pub fn update_sell_available(accounts: &UpdateSell) -> Result<()> {
     if sell.created_at == 0 {
         return err!(ErrorCode::InvalidRequestError);
     }
-    if sell.offer_count > 0 {
-        return err!(ErrorCode::InvalidRequestError);
-    }
 
     Ok(())
 }

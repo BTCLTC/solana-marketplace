@@ -9,7 +9,6 @@ use crate::{
 };
 
 #[derive(Accounts)]
-#[instruction(_token_type: u8)]
 pub struct Buy<'info> {
     #[account(mut)]
     pub buyer: Signer<'info>,
@@ -56,10 +55,7 @@ pub struct Buy<'info> {
 
     #[account(
         mut,
-        seeds = [
-            TOKEN_VAULT_PDA_SEED.as_ref(),
-            &[_token_type]
-        ],
+        seeds = [TOKEN_VAULT_PDA_SEED.as_ref()],
         bump
     )]
     /// CHECK: This is not dangerous because we don't read or write from this account
@@ -78,7 +74,6 @@ pub struct Buy<'info> {
         constraint = sell.load()?.owner == seller.key(),
         constraint = sell.load()?.nft_mint == nft_mint.key(),
         constraint = sell.load()?.nft_vault == nft_vault.key(),
-        constraint = sell.load()?.token_type == _token_type,
         constraint = sell.load()?.owner_token_vault == seller_token_wallet.key(),
         seeds = [
             SELL_PDA_SEED.as_ref(),
@@ -101,7 +96,7 @@ pub struct Buy<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-pub fn buy_handler(ctx: Context<Buy>, _token_type: u8) -> Result<()> {
+pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
     let mut config = ctx.accounts.config.load_mut()?;
     let sell = &mut ctx.accounts.sell.load()?;
 

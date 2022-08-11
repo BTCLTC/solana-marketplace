@@ -29,23 +29,23 @@ pub mod solana_marketplace {
     }
 
     #[access_control(start_sell_available(&ctx.accounts))]
-    pub fn start_sell(ctx: Context<StartSell>, _token_type: u8, price: u64) -> Result<()> {
-        start_sell_handle(ctx, _token_type, price)
+    pub fn start_sell(ctx: Context<StartSell>, price: u64) -> Result<()> {
+        start_sell_handle(ctx, price)
     }
 
     #[access_control(update_sell_available(&ctx.accounts))]
-    pub fn update_sell(ctx: Context<UpdateSell>, _token_type: u8, price: u64) -> Result<()> {
-        update_sell_handler(ctx, _token_type, price)
+    pub fn update_sell(ctx: Context<UpdateSell>, price: u64) -> Result<()> {
+        update_sell_handler(ctx, price)
     }
 
     #[access_control(close_sell_available(&ctx.accounts))]
-    pub fn close_sell(ctx: Context<CloseSell>, _token_type: u8) -> Result<()> {
-        close_sell_handler(ctx, _token_type)
+    pub fn close_sell(ctx: Context<CloseSell>) -> Result<()> {
+        close_sell_handler(ctx)
     }
 
     #[access_control(buy_available(&ctx.accounts))]
-    pub fn buy(ctx: Context<Buy>, _token_type: u8) -> Result<()> {
-        buy_handler(ctx, _token_type)
+    pub fn buy(ctx: Context<Buy>) -> Result<()> {
+        buy_handler(ctx)
     }
 }
 

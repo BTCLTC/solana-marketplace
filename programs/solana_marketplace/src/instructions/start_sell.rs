@@ -10,7 +10,6 @@ use crate::{
 };
 
 #[derive(Accounts)]
-#[instruction(_token_type: u8)]
 pub struct StartSell<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
@@ -78,7 +77,7 @@ pub struct StartSell<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-pub fn start_sell_handle(ctx: Context<StartSell>, _token_type: u8, price: u64) -> Result<()> {
+pub fn start_sell_handle(ctx: Context<StartSell>, price: u64) -> Result<()> {
     let now_ts = Clock::get().unwrap().unix_timestamp;
     let mut config = ctx.accounts.config.load_mut()?;
     let mut sell = ctx.accounts.sell.load_init()?;
@@ -115,7 +114,6 @@ pub fn start_sell_handle(ctx: Context<StartSell>, _token_type: u8, price: u64) -
     sell.nft_mint = ctx.accounts.nft_mint.key();
     sell.nft_vault = ctx.accounts.nft_vault.key();
     sell.price = price;
-    sell.token_type = _token_type;
     sell.created_at = now_ts as u64;
 
     // Update config

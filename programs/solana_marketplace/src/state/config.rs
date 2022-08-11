@@ -12,5 +12,5 @@ pub struct Config {
 }
 
 impl Config {
-    pub const LEN: usize = 32 + (8 * 4) + 1 + 1;
+    pub const LEN: usize = 32 + (8 * 3) + 1 + 1;
 }
