@@ -1,0 +1,14 @@
+{
+  "program": "BY1FricTncwgkwJELaYEoK49KLWz7HthD2Gjxe64ByfP",
+  "nft_type": "solchicks_dev",
+  "fee_rate": 10,
+  "tokens": [
+    {
+      "token_type": "usdc",
+      "token_mint": "Eowh3zJ71mH6ngN8uUgsZrr1RESfYryFvz9qHtNGYmaP",
+      "decimals": 6,
+      "need_init": true,
+      "index": 1
+    }
+  ]
+}

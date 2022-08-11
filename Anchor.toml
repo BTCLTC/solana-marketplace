@@ -1,0 +1,22 @@
+[features]
+seeds = false
+skip-lint = false
+
+[programs.localnet]
+nft_marketplace = "NFTMTNtLozbwJzvLDcdp2qRSgm4tKHxo2eu4cD3nC9y"
+
+[programs.devnet]
+nft_marketplace = "NFTMTNtLozbwJzvLDcdp2qRSgm4tKHxo2eu4cD3nC9y"
+
+[programs.mainnet]
+nft_marketplace = "NFTMTNtLozbwJzvLDcdp2qRSgm4tKHxo2eu4cD3nC9y"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "keypair/NFT99UUrXCrtYfyAEgAnKPfh9sA3LtSP2sSDLmBW8UF.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

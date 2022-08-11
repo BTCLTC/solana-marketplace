@@ -1,0 +1,21 @@
+{
+  "program": "BY1FricTncwgkwJELaYEoK49KLWz7HthD2Gjxe64ByfP",
+  "nft_type": "COLLECTION_NAME",
+  "fee_rate": 10,
+  "tokens": [
+    {
+      "token_type": "usdc",
+      "token_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "decimals": 6,
+      "need_init": true,
+      "index": 1
+    },
+    {
+      "token_type": "sol",
+      "token_mint": "So11111111111111111111111111111111111111112",
+      "decimals": 9,
+      "need_init": false,
+      "index": 2
+    }
+  ]
+}
