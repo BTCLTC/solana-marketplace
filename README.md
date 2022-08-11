@@ -34,30 +34,15 @@ npm run build 构建合约程序
 
 npm run deploy 部署合约程序
 
-npm run migrate 发行Token并初始化管理员
-
 npm run test 运行单元测试
 ```
 
 ## 文件目录结构
 
 ```bash
-app          自动化相关程序
-docs         合约文档
+app          前端程序
 keypair      钱包或者合约私钥文件
 programs     合约代码
-scripts      脚本，启动本地网络
-web          前端demo程序
-```
-
-## 运行本地网络
-
-```bash
-
-mkdir logs
-touch logs/solana.log
-
-./scripts/start_solana_validator.sh
 ```
 
 ## 其他

@@ -1,4 +1,3 @@
-//! CGC NFT MarketPlace program
 extern crate core;
 
 pub mod constants;
