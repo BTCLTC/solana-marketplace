@@ -6,8 +6,7 @@ pub struct Config {
     pub owner: Pubkey,
     pub count_sells: u64,
     pub trade_fee_rate: u64, /* % */
-    pub sell_id: u64,
-    pub offer_id: u64,
+    pub order_id: u64,
     pub freeze_program: bool,
     pub nonce: u8,
 }

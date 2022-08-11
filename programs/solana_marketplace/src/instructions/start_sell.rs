@@ -109,7 +109,7 @@ pub fn start_sell_handle(ctx: Context<StartSell>, _token_type: u8, price: u64) -
     }
 
     // Save Sell info
-    sell.id = config.sell_id;
+    sell.id = config.order_id;
     sell.owner = ctx.accounts.user.key();
     sell.owner_token_vault = ctx.accounts.user_token_vault.key();
     sell.nft_mint = ctx.accounts.nft_mint.key();
@@ -120,7 +120,7 @@ pub fn start_sell_handle(ctx: Context<StartSell>, _token_type: u8, price: u64) -
 
     // Update config
     config.count_sells += 1;
-    config.sell_id += 1;
+    config.order_id += 1;
 
     Ok(())
 }

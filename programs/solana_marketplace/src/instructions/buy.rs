@@ -1,10 +1,11 @@
 use anchor_lang::{prelude::*, system_program};
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
-use solana_program::{sysvar::rent, program::invoke, system_instruction::transfer};
+use solana_program::{program::invoke, system_instruction::transfer, sysvar::rent};
 
 use crate::{
     constants::{CONFIG_PDA_SEED, NFT_VAULT_PDA_SEED, SELL_PDA_SEED, TOKEN_VAULT_PDA_SEED},
-    state::{Config, Sell}, utils::{assert_keys_equal, get_mint_from_token_account, get_owner_from_token_account},
+    state::{Config, Sell},
+    utils::{assert_keys_equal, get_mint_from_token_account, get_owner_from_token_account},
 };
 
 #[derive(Accounts)]
@@ -102,7 +103,7 @@ pub struct Buy<'info> {
 
 pub fn buy_handler(ctx: Context<Buy>, _token_type: u8) -> Result<()> {
     let mut config = ctx.accounts.config.load_mut()?;
-    let mut sell = &mut ctx.accounts.sell.load_mut()?;
+    let sell = &mut ctx.accounts.sell.load()?;
 
     // Payment
     let fee: u64 = (sell.price as u128)

@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 #[derive(Default)]
 pub struct Offer {
     pub id: u64,
-    pub sell_id: u64,
+    pub order_id: u64,
     pub owner: Pubkey,
     pub seller: Pubkey,
     pub nft_mint: Pubkey,

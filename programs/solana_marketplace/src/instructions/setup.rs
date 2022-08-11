@@ -33,8 +33,7 @@ pub fn setup_handler(ctx: Context<Setup>, _nonce_config: u8, trade_fee_rate: u64
     let mut config = ctx.accounts.config.load_init()?;
     config.owner = ctx.accounts.owner.key();
     config.trade_fee_rate = trade_fee_rate;
-    config.sell_id = 1;
-    config.offer_id = 1;
+    config.order_id = 1;
     config.nonce = _nonce_config;
     Ok(())
 }
