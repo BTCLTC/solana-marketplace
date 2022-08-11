@@ -1,0 +1,39 @@
+{
+  "title": "title",
+  "titleTemplate": "%s | SubTitle",
+  "description": "xxxx",
+  "favicon": "/favicon.ico",
+  "additionalMetaTags": [
+    {
+      "property": "application-name",
+      "content": "xxxx"
+    },
+    {
+      "name": "viewport",
+      "content": "maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"
+    },
+    {
+      "name": "keywords",
+      "content": "xxxx"
+    }
+  ],
+  "twitter": {
+    "cardType": "summary",
+    "handle": "xxxx",
+    "site": "xxxx"
+  },
+  "openGraph": {
+    "type": "website",
+    "site_name": "xxxx",
+    "profile": {
+      "firstName": "xxxx"
+    },
+    "images": [
+      {
+        "url": "https://www.nextjs.cn/static/images/nextjs-logo.png",
+        "width": 224,
+        "height": 144
+      }
+    ]
+  }
+}
