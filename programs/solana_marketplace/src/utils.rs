@@ -10,7 +10,6 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 use spl_token::{instruction::initialize_account2};
 use arrayref::array_ref;
 
-use crate::constants::*;
 use crate::{ErrorCode};
 
 pub fn assert_owned_by(account: &AccountInfo, owner: &Pubkey) -> Result<()> {
@@ -208,13 +207,4 @@ pub fn get_fee_payer<'a, 'b>(
         return err!(ErrorCode::NoPayerPresent);
     };
     Ok((fee_payer, &seeds))
-}
-
-pub fn name_seed(name: &str) -> &[u8] {
-    let b = name.as_bytes();
-    if b.len() > NAME_MAX_LEN {
-        &b[0..NAME_MAX_LEN]
-    } else {
-        b
-    }
 }

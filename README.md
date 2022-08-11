@@ -33,8 +33,6 @@ yarn(或者npm install) 安装依赖
 npm run build 构建合约程序
 
 npm run deploy 部署合约程序
-
-npm run test 运行单元测试
 ```
 
 ## 文件目录结构

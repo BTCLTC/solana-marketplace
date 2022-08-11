@@ -3,10 +3,8 @@ use anchor_spl::token::{TokenAccount, Token, Mint};
 use crate::{ErrorCode};
 use crate::constants::*;
 use crate::models::*;
-use crate::utils::*;
 
 #[derive(Accounts)]
-#[instruction(_nft_type: String)]
 pub struct Setup<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
@@ -14,10 +12,7 @@ pub struct Setup<'info> {
     #[account(
     init,
     payer = owner,
-    seeds = [
-    CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    ],
+    seeds = [ CONFIG_PDA_SEED.as_ref()],
     bump,
     space = 8 + Config::LEN
     )]
@@ -30,17 +25,13 @@ pub struct Setup<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(_nft_type: String)]
-pub struct ConfigContext<'info> {
+pub struct UpdateConfig<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
 
     #[account(
     mut,
-    seeds = [
-    CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    ],
+    seeds = [ CONFIG_PDA_SEED.as_ref()],
     bump,
     constraint = config.owner == owner.key() @ ErrorCode::PermissionError
     )]
@@ -48,16 +39,89 @@ pub struct ConfigContext<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(_nft_type: String, _token_type: String)]
+pub struct ProgramFreeze<'info> {
+    #[account(mut)]
+    pub owner: Signer<'info>,
+
+    #[account(
+    seeds = [ CONFIG_PDA_SEED.as_ref()],
+    bump,
+    constraint = config.owner == owner.key() @ ErrorCode::PermissionError
+    )]
+    pub config: Box<Account<'info, Config>>,
+}
+
+#[derive(Accounts)]
+#[instruction(_token_type: u8)]
+pub struct TokenSetUp<'info> {
+    #[account(mut)]
+    pub owner: Signer<'info>,
+
+    #[account(
+    mut,
+    constraint = config.owner == owner.key() @ ErrorCode::PermissionError,
+    seeds = [CONFIG_PDA_SEED.as_ref()],
+    bump = config.nonce,
+    )]
+    pub config: Box<Account<'info, Config>>,
+
+    #[account(
+    init,
+    payer = owner,
+    seeds = [
+    TOKEN_CONFIG_PDA_SEED.as_ref(),
+    & [_token_type]
+    ],
+    bump,
+    space = 8 + TokenConfig::LEN
+    )]
+    pub token_config: Box<Account<'info, TokenConfig>>,
+
+    pub token_mint: Box<Account<'info, Mint>>,
+
+    #[account(
+    mut,
+    seeds = [
+    TOKEN_VAULT_PDA_SEED.as_ref(),
+    & [_token_type]
+    ],
+    bump
+    )]
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    pub token_vault: UncheckedAccount<'info>,
+
+    ///used by anchor for init of the token
+    pub system_program: Program<'info, System>,
+    pub token_program: Program<'info, Token>,
+    pub rent: Sysvar<'info, Rent>,
+}
+
+#[derive(Accounts)]
+#[instruction(_token_type: u8)]
+pub struct TokenFreeze<'info> {
+    #[account(mut)]
+    pub owner: Signer<'info>,
+
+    #[account(
+    mut,
+    seeds = [
+    TOKEN_CONFIG_PDA_SEED.as_ref(),
+    & [_token_type]
+    ],
+    bump,
+    constraint = token_config.owner == owner.key() @ ErrorCode::PermissionError
+    )]
+    pub token_config: Box<Account<'info, TokenConfig>>,
+}
+
+#[derive(Accounts)]
+#[instruction(_token_type: u8)]
 pub struct InitTokenAccount<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
 
     #[account(
-    seeds = [
-    CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    ],
+    seeds = [ CONFIG_PDA_SEED.as_ref()],
     bump,
     constraint = config.owner == owner.key() @ ErrorCode::PermissionError,
     )]
@@ -72,8 +136,7 @@ pub struct InitTokenAccount<'info> {
     token::authority = token_vault,
     seeds = [
     TOKEN_VAULT_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    name_seed(& _token_type),
+    & [_token_type]
     ],
     bump
     )]
@@ -86,89 +149,27 @@ pub struct InitTokenAccount<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(_nft_type: String, _token_type: String)]
-pub struct TokenSetUp<'info> {
-    #[account(mut)]
-    pub owner: Signer<'info>,
-
-    #[account(
-    mut,
-    constraint = config.owner == owner.key() @ ErrorCode::PermissionError,
-    seeds = [
-    CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    ],
-    bump = config.nonce,
-    )]
-    pub config: Box<Account<'info, Config>>,
-
-    #[account(
-    init,
-    payer = owner,
-    seeds = [
-    TOKEN_CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    name_seed(& _token_type),
-    ],
-    bump,
-    space = 8 + TokenConfig::LEN
-    )]
-    pub token_config: Box<Account<'info, TokenConfig>>,
-
-    pub token_mint: Box<Account<'info, Mint>>,
-
-    #[account(
-    mut,
-    seeds = [
-    TOKEN_VAULT_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    name_seed(& _token_type),
-    ],
-    bump
-    )]
-    /// CHECK: This is not dangerous because we don't read or write from this account
-    pub token_vault: UncheckedAccount<'info>,
-
-    ///used by anchor for init of the token
-    pub system_program: Program<'info, System>,
-    pub token_program: Program<'info, Token>,
-    pub rent: Sysvar<'info, Rent>,
-}
-
-#[derive(Accounts)]
-#[instruction(_nft_type: String, _token_type: String)]
-pub struct TokenConfigContext<'info> {
-    #[account(mut)]
-    pub owner: Signer<'info>,
-
-    #[account(
-    mut,
-    seeds = [
-    TOKEN_CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    name_seed(& _token_type),
-    ],
-    bump,
-    constraint = token_config.owner == owner.key() @ ErrorCode::PermissionError
-    )]
-    pub token_config: Box<Account<'info, TokenConfig>>,
-}
-
-#[derive(Accounts)]
-#[instruction(_nft_type: String)]
+#[instruction(_token_type: u8)]
 pub struct StartSell<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
     #[account(
     mut,
-    seeds = [
-    CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    ],
+    seeds = [CONFIG_PDA_SEED.as_ref()],
     bump = config.nonce
     )]
     pub config: Box<Account<'info, Config>>,
+
+    #[account(
+    seeds = [
+    TOKEN_CONFIG_PDA_SEED.as_ref(),
+    & [_token_type]
+    ],
+    bump,
+    has_one = token_mint,
+    )]
+    pub token_config: Box<Account<'info, TokenConfig>>,
 
     #[account(
     constraint = nft_mint.supply == 1,
@@ -196,12 +197,17 @@ pub struct StartSell<'info> {
     )]
     pub user_nft_vault: Box<Account<'info, TokenAccount>>,
 
+    pub token_mint: Box<Account<'info, Mint>>,
+
+    #[account(mut)]
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    pub user_token_vault: UncheckedAccount<'info>,
+
     #[account(
     init,
     payer = user,
     seeds = [
     SELL_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
     user.key().as_ref(),
     nft_mint.key().as_ref(),
     ],
@@ -217,19 +223,25 @@ pub struct StartSell<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(_nft_type: String)]
+#[instruction(_token_type: u8)]
 pub struct UpdateSell<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
     #[account(
-    seeds = [
-    CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    ],
+    seeds = [CONFIG_PDA_SEED.as_ref()],
     bump = config.nonce
     )]
     pub config: Box<Account<'info, Config>>,
+
+    #[account(
+    seeds = [
+    TOKEN_CONFIG_PDA_SEED.as_ref(),
+    & [_token_type]
+    ],
+    bump,
+    )]
+    pub token_config: Box<Account<'info, TokenConfig>>,
 
     #[account(
     constraint = nft_mint.supply == 1,
@@ -243,7 +255,6 @@ pub struct UpdateSell<'info> {
     constraint = sell.nft_mint == nft_mint.key(),
     seeds = [
     SELL_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
     user.key().as_ref(),
     nft_mint.key().as_ref(),
     ],
@@ -258,20 +269,26 @@ pub struct UpdateSell<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(_nft_type: String)]
+#[instruction(_token_type: u8)]
 pub struct CloseSell<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
     #[account(
     mut,
-    seeds = [
-    CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    ],
+    seeds = [CONFIG_PDA_SEED.as_ref()],
     bump = config.nonce
     )]
     pub config: Box<Account<'info, Config>>,
+
+    #[account(
+    seeds = [
+    TOKEN_CONFIG_PDA_SEED.as_ref(),
+    & [_token_type]
+    ],
+    bump,
+    )]
+    pub token_config: Box<Account<'info, TokenConfig>>,
 
     #[account(
     constraint = nft_mint.supply == 1,
@@ -304,7 +321,6 @@ pub struct CloseSell<'info> {
     constraint = sell.nft_vault == nft_vault.key(),
     seeds = [
     SELL_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
     user.key().as_ref(),
     nft_mint.key().as_ref(),
     ],
@@ -320,7 +336,7 @@ pub struct CloseSell<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(_nft_type: String, _token_type: String)]
+#[instruction(_token_type: u8)]
 pub struct Buy<'info> {
     #[account(mut)]
     pub buyer: Signer<'info>,
@@ -334,10 +350,7 @@ pub struct Buy<'info> {
 
     #[account(
     mut,
-    seeds = [
-    CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    ],
+    seeds = [CONFIG_PDA_SEED.as_ref()],
     bump = config.nonce
     )]
     pub config: Box<Account<'info, Config>>,
@@ -346,8 +359,7 @@ pub struct Buy<'info> {
     mut,
     seeds = [
     TOKEN_CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    name_seed(& _token_type),
+    & [_token_type]
     ],
     bump,
     has_one = token_mint,
@@ -385,8 +397,7 @@ pub struct Buy<'info> {
     mut,
     seeds = [
     TOKEN_VAULT_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    name_seed(& _token_type),
+    & [_token_type]
     ],
     bump
     )]
@@ -406,9 +417,10 @@ pub struct Buy<'info> {
     constraint = sell.owner == seller.key(),
     constraint = sell.nft_mint == nft_mint.key(),
     constraint = sell.nft_vault == nft_vault.key(),
+    constraint = sell.token_type == _token_type,
+    constraint = sell.owner_token_vault == seller_token_wallet.key(),
     seeds = [
     SELL_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
     seller.key().as_ref(),
     nft_mint.key().as_ref(),
     ],
@@ -417,19 +429,6 @@ pub struct Buy<'info> {
     )]
     pub sell: Box<Account<'info, Sell>>,
 
-    /// Chainlink feed Account
-    #[account(
-    address = chainlink_constants::CHAINLINK_FEED.parse::<Pubkey>().unwrap(),
-    )]
-    /// CHECK: We're reading data from this specified chainlink feed
-    pub chainlink_feed: AccountInfo<'info>,
-
-    #[account(
-    address = chainlink_constants::CHAINLINK_PROGRAM_ID.parse::<Pubkey>().unwrap(),
-    )]
-    /// CHECK: This is the Chainlink program library on Devnet
-    pub chainlink_program: AccountInfo<'info>,
-
     ///used by anchor for init of the token
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
@@ -437,17 +436,14 @@ pub struct Buy<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(_nft_type: String, _token_type: String, _sell_id: u64)]
+#[instruction(_token_type: u8, _sell_id: u64)]
 pub struct ApplyOffer<'info> {
     #[account(mut)]
     pub buyer: Signer<'info>,
 
     #[account(
     mut,
-    seeds = [
-    CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    ],
+    seeds = [CONFIG_PDA_SEED.as_ref()],
     bump = config.nonce
     )]
     pub config: Box<Account<'info, Config>>,
@@ -455,8 +451,7 @@ pub struct ApplyOffer<'info> {
     #[account(
     seeds = [
     TOKEN_CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    name_seed(& _token_type),
+    & [_token_type]
     ],
     bump,
     has_one = token_mint,
@@ -476,8 +471,7 @@ pub struct ApplyOffer<'info> {
     mut,
     seeds = [
     TOKEN_VAULT_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    name_seed(& _token_type),
+    & [_token_type]
     ],
     bump,
     )]
@@ -492,9 +486,9 @@ pub struct ApplyOffer<'info> {
     mut,
     constraint = sell.owner != buyer.key(),
     constraint = sell.nft_mint == nft_mint.key(),
+    constraint = sell.token_type == _token_type,
     seeds = [
     SELL_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
     sell.owner.as_ref(),
     nft_mint.key().as_ref(),
     ],
@@ -507,7 +501,6 @@ pub struct ApplyOffer<'info> {
     payer = buyer,
     seeds = [
     OFFER_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
     buyer.key().as_ref(),
     nft_mint.key().as_ref(),
     _sell_id.to_string().as_ref(),
@@ -517,19 +510,6 @@ pub struct ApplyOffer<'info> {
     )]
     pub offer: Box<Account<'info, Offer>>,
 
-    /// Chainlink feed Account
-    #[account(
-    address = chainlink_constants::CHAINLINK_FEED.parse::<Pubkey>().unwrap(),
-    )]
-    /// CHECK: We're reading data from this specified chainlink feed
-    pub chainlink_feed: AccountInfo<'info>,
-
-    #[account(
-    address = chainlink_constants::CHAINLINK_PROGRAM_ID.parse::<Pubkey>().unwrap(),
-    )]
-    /// CHECK: This is the Chainlink program library on Devnet
-    pub chainlink_program: AccountInfo<'info>,
-
     ///used by anchor for init of the token
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
@@ -537,16 +517,13 @@ pub struct ApplyOffer<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(_nft_type: String, _token_type: String, _sell_id: u64)]
+#[instruction(_token_type: u8, _sell_id: u64)]
 pub struct CancelOffer<'info> {
     #[account(mut)]
     pub buyer: Signer<'info>,
 
     #[account(
-    seeds = [
-    CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    ],
+    seeds = [CONFIG_PDA_SEED.as_ref()],
     bump = config.nonce
     )]
     pub config: Box<Account<'info, Config>>,
@@ -554,8 +531,7 @@ pub struct CancelOffer<'info> {
     #[account(
     seeds = [
     TOKEN_CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    name_seed(& _token_type),
+    & [_token_type]
     ],
     bump,
     has_one = token_mint,
@@ -575,8 +551,7 @@ pub struct CancelOffer<'info> {
     mut,
     seeds = [
     TOKEN_VAULT_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    name_seed(& _token_type),
+    & [_token_type]
     ],
     bump,
     )]
@@ -591,9 +566,9 @@ pub struct CancelOffer<'info> {
     mut,
     constraint = sell.owner != buyer.key(),
     constraint = sell.nft_mint == nft_mint.key(),
+    constraint = sell.token_type == _token_type,
     seeds = [
     SELL_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
     sell.owner.as_ref(),
     nft_mint.key().as_ref(),
     ],
@@ -608,7 +583,6 @@ pub struct CancelOffer<'info> {
     constraint = offer.nft_mint == nft_mint.key(),
     seeds = [
     OFFER_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
     buyer.key().as_ref(),
     nft_mint.key().as_ref(),
     _sell_id.to_string().as_ref(),
@@ -625,7 +599,7 @@ pub struct CancelOffer<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(_nft_type: String, _token_type: String, _sell_id: u64)]
+#[instruction(_token_type: u8, _sell_id: u64)]
 pub struct AcceptOffer<'info> {
     #[account(mut)]
     pub seller: Signer<'info>,
@@ -639,10 +613,7 @@ pub struct AcceptOffer<'info> {
 
     #[account(
     mut,
-    seeds = [
-    CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    ],
+    seeds = [CONFIG_PDA_SEED.as_ref()],
     bump = config.nonce
     )]
     pub config: Box<Account<'info, Config>>,
@@ -651,8 +622,7 @@ pub struct AcceptOffer<'info> {
     mut,
     seeds = [
     TOKEN_CONFIG_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    name_seed(& _token_type),
+    & [_token_type]
     ],
     bump,
     has_one = token_mint,
@@ -690,8 +660,7 @@ pub struct AcceptOffer<'info> {
     mut,
     seeds = [
     TOKEN_VAULT_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
-    name_seed(& _token_type),
+    & [_token_type]
     ],
     bump
     )]
@@ -707,9 +676,10 @@ pub struct AcceptOffer<'info> {
     constraint = sell.owner == seller.key(),
     constraint = sell.nft_mint == nft_mint.key(),
     constraint = sell.nft_vault == nft_vault.key(),
+    constraint = sell.token_type == _token_type,
+    constraint = sell.owner_token_vault == seller_token_wallet.key(),
     seeds = [
     SELL_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
     seller.key().as_ref(),
     nft_mint.key().as_ref(),
     ],
@@ -725,7 +695,6 @@ pub struct AcceptOffer<'info> {
     constraint = offer.nft_mint == nft_mint.key(),
     seeds = [
     OFFER_PDA_SEED.as_ref(),
-    name_seed(& _nft_type),
     buyer.key().as_ref(),
     nft_mint.key().as_ref(),
     _sell_id.to_string().as_ref(),
@@ -740,6 +709,3 @@ pub struct AcceptOffer<'info> {
     pub token_program: Program<'info, Token>,
     pub rent: Sysvar<'info, Rent>,
 }
-
-
-
