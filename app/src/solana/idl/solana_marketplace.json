@@ -19,9 +19,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",
@@ -109,9 +107,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",
@@ -163,9 +159,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",
@@ -262,9 +256,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",
@@ -320,9 +312,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",
@@ -388,9 +378,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",
@@ -477,9 +465,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",
@@ -551,9 +537,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",
@@ -633,9 +617,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",
@@ -726,9 +708,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",

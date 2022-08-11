@@ -1,7 +1,11 @@
 import { AnchorProvider, Program } from '@project-serum/anchor';
 import { SystemProgram } from '@solana/web3.js';
-import { marketKeypair, marketPublicKey, storePublicKey } from '../../utils/constant';
-import { SolanaMarketplace } from '../../types/solana_marketplace';
+import {
+  marketKeypair,
+  marketPublicKey,
+  storePublicKey,
+} from '../../utils/constant';
+import { SolanaMarketplace } from '../types/solana_marketplace';
 
 export const initSellingResource = async (
   provider: AnchorProvider,

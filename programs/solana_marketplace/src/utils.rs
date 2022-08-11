@@ -10,7 +10,7 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 use arrayref::array_ref;
 use spl_token::instruction::initialize_account2;
 
-use crate::ErrorCode;
+use crate::errors::ErrorCode;
 
 pub fn assert_owned_by(account: &AccountInfo, owner: &Pubkey) -> Result<()> {
     if account.owner != owner {
