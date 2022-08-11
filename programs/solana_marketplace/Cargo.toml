@@ -1,12 +1,12 @@
 [package]
-name = "nft_marketplace"
+name = "solana_marketplace"
 version = "0.1.0"
 description = "Created with Anchor"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "nft_marketplace"
+name = "solana_marketplace"
 
 [features]
 no-entrypoint = []

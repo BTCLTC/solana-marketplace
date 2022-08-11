@@ -1,6 +1,6 @@
 import * as anchor from "@project-serum/anchor"
 import { Program, Provider } from "@project-serum/anchor"
-import { NftMarketplace } from "../target/types/nft_marketplace"
+import { NftMarketplace } from "../target/types/solana_marketplace"
 import { Token, TOKEN_PROGRAM_ID } from "@solana/spl-token"
 
 const utils = require("./utils")
@@ -20,7 +20,7 @@ const TOKEN_VAULT_PDA_SEED = "token_vault"
 const SELL_PDA_SEED = "sell"
 const OFFER_PDA_SEED = "offer"
 
-describe("nft_marketplace", () => {
+describe("solana_marketplace", () => {
   let close_sell_mode: boolean = false
   let buy_mode: boolean = false
   let offer_cancel_mode: boolean = false

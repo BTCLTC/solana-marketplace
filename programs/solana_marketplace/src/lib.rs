@@ -22,7 +22,7 @@ use crate::{constants::*};
 declare_id!("BY1FricTncwgkwJELaYEoK49KLWz7HthD2Gjxe64ByfP");
 
 #[program]
-pub mod nft_marketplace {
+pub mod solana_marketplace {
     use crate::models::AcceptToken;
     use super::*;
 

@@ -62,4 +62,4 @@ touch logs/solana.log
 
 ## 其他
 
-首次构建合约，在 target/deploy 会自动生成两个文件（nft_marketplace-keypair.json、nft_marketplace.so），若要自定义合约地址，则把根目录的 keypair 文件夹里面的 json 文件内容，拷贝覆盖 target/deploy/nft_marketplace-keypair.json 内容，在首次部署即可为自己定义的合约程序地址；但是在部署之前，请先修改 programs/nft-marketplace/src/lib.rs 里面的 declare_id!内容为当前的合约程序地址，然后再次构建，才进行第一次部署合约；注意自定义合约地址，必须是全新未使用的地址，不能向此地址充值任何代币，包括禁止充值 SOL，必须是全新未使用
+首次构建合约，在 target/deploy 会自动生成两个文件（solana_marketplace-keypair.json、solana_marketplace.so），若要自定义合约地址，则把根目录的 keypair 文件夹里面的 json 文件内容，拷贝覆盖 target/deploy/solana_marketplace-keypair.json 内容，在首次部署即可为自己定义的合约程序地址；但是在部署之前，请先修改 programs/solana-marketplace/src/lib.rs 里面的 declare_id!内容为当前的合约程序地址，然后再次构建，才进行第一次部署合约；注意自定义合约地址，必须是全新未使用的地址，不能向此地址充值任何代币，包括禁止充值 SOL，必须是全新未使用
