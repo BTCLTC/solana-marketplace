@@ -16,8 +16,8 @@ declare_id!("NFTMTNtLozbwJzvLDcdp2qRSgm4tKHxo2eu4cD3nC9y");
 pub mod solana_marketplace {
     use super::*;
 
-    pub fn setup(ctx: Context<Setup>, _nonce_config: u8, trade_fee_rate: u64) -> Result<()> {
-        setup_handler(ctx, _nonce_config, trade_fee_rate)
+    pub fn setup(ctx: Context<Setup>, nonce: u8, trade_fee_rate: u64) -> Result<()> {
+        setup_handler(ctx, nonce, trade_fee_rate)
     }
 
     pub fn update_config(ctx: Context<UpdateConfig>, trade_fee_rate: u64) -> Result<()> {

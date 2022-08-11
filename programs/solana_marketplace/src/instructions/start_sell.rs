@@ -6,7 +6,6 @@ use crate::{
     constants::{CONFIG_PDA_SEED, NFT_VAULT_PDA_SEED, SELL_PDA_SEED},
     errors::ErrorCode,
     state::{Config, Sell},
-    utils::{assert_keys_equal, get_mint_from_token_account, get_owner_from_token_account},
 };
 
 #[derive(Accounts)]
@@ -47,11 +46,8 @@ pub struct StartSell<'info> {
     )]
     pub user_nft_vault: Box<Account<'info, TokenAccount>>,
 
+    #[account(address = spl_token::native_mint::ID)]
     pub token_mint: Box<Account<'info, Mint>>,
-
-    #[account(mut)]
-    /// CHECK: This is not dangerous because we don't read or write from this account
-    pub user_token_vault: UncheckedAccount<'info>,
 
     #[account(
         init,
@@ -97,20 +93,9 @@ pub fn start_sell_handle(ctx: Context<StartSell>, price: u64) -> Result<()> {
         token::transfer(cpi_ctx, 1)?;
     }
 
-    let is_native = ctx.accounts.token_mint.key() == spl_token::native_mint::id();
-    if is_native {
-        assert_keys_equal(ctx.accounts.user.key(), ctx.accounts.user_token_vault.key())?;
-    } else {
-        let user_token_vault_mint = get_mint_from_token_account(&ctx.accounts.user_token_vault)?;
-        let user_token_vault_owner = get_owner_from_token_account(&ctx.accounts.user_token_vault)?;
-        assert_keys_equal(ctx.accounts.token_mint.key(), user_token_vault_mint)?;
-        assert_keys_equal(ctx.accounts.user.key(), user_token_vault_owner)?;
-    }
-
     // Save Sell info
     sell.id = config.order_id;
     sell.owner = ctx.accounts.user.key();
-    sell.owner_token_vault = ctx.accounts.user_token_vault.key();
     sell.nft_mint = ctx.accounts.nft_mint.key();
     sell.nft_vault = ctx.accounts.nft_vault.key();
     sell.price = price;

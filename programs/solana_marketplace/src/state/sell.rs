@@ -5,7 +5,6 @@ use anchor_lang::prelude::*;
 pub struct Sell {
     pub id: u64,
     pub owner: Pubkey,
-    pub owner_token_vault: Pubkey,
     pub nft_mint: Pubkey,
     pub nft_vault: Pubkey,
     pub price: u64,
@@ -13,5 +12,5 @@ pub struct Sell {
 }
 
 impl Sell {
-    pub const LEN: usize = 8 + (32 * 4) + 8 + 8;
+    pub const LEN: usize = 8 + (32 * 3) + 8 + 8;
 }

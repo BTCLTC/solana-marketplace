@@ -51,6 +51,7 @@ pub struct Buy<'info> {
     )]
     pub buyer_nft_vault: Box<Account<'info, TokenAccount>>,
 
+    #[account(address = spl_token::native_mint::ID)]
     pub token_mint: Box<Account<'info, Mint>>,
 
     #[account(
@@ -61,20 +62,11 @@ pub struct Buy<'info> {
     /// CHECK: This is not dangerous because we don't read or write from this account
     pub token_vault: UncheckedAccount<'info>,
 
-    #[account(mut)]
-    /// CHECK: This is not dangerous because we don't read or write from this account
-    pub buyer_token_wallet: UncheckedAccount<'info>,
-
-    #[account(mut)]
-    /// CHECK: This is not dangerous because we don't read or write from this account
-    pub seller_token_wallet: UncheckedAccount<'info>,
-
     #[account(
         mut,
         constraint = sell.load()?.owner == seller.key(),
         constraint = sell.load()?.nft_mint == nft_mint.key(),
         constraint = sell.load()?.nft_vault == nft_vault.key(),
-        constraint = sell.load()?.owner_token_vault == seller_token_wallet.key(),
         seeds = [
             SELL_PDA_SEED.as_ref(),
             seller.key().as_ref(),
@@ -115,73 +107,34 @@ pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
         .try_into()
         .unwrap();
 
-    let is_native = ctx.accounts.token_mint.key() == spl_token::native_mint::id();
-    if is_native {
-        assert_keys_equal(
-            ctx.accounts.buyer.key(),
-            ctx.accounts.buyer_token_wallet.key(),
-        )?;
-        assert_keys_equal(
-            ctx.accounts.seller.key(),
-            ctx.accounts.seller_token_wallet.key(),
-        )?;
-        // send lamports to seller
-        invoke(
-            &transfer(
-                ctx.accounts.buyer_token_wallet.to_account_info().key,
-                ctx.accounts.seller_token_wallet.to_account_info().key,
-                price,
-            ),
-            &[
-                ctx.accounts.buyer.to_account_info(),
-                ctx.accounts.seller.to_account_info(),
-                ctx.accounts.system_program.to_account_info(),
-            ],
-        )?;
 
-        // send lamports to fee_vault
-        invoke(
-            &transfer(
-                ctx.accounts.buyer_token_wallet.to_account_info().key,
-                ctx.accounts.token_vault.to_account_info().key,
-                fee,
-            ),
-            &[
-                ctx.accounts.buyer.to_account_info(),
-                ctx.accounts.token_vault.to_account_info(),
-                ctx.accounts.system_program.to_account_info(),
-            ],
-        )?;
-    } else {
-        // send fee token to token_vault
-        let buyer_token_mint = get_mint_from_token_account(&ctx.accounts.buyer_token_wallet)?;
-        let seller_token_mint = get_mint_from_token_account(&ctx.accounts.seller_token_wallet)?;
-        let buyer_token_owner = get_owner_from_token_account(&ctx.accounts.buyer_token_wallet)?;
-        let seller_token_owner = get_owner_from_token_account(&ctx.accounts.seller_token_wallet)?;
+    // send lamports to seller
+    invoke(
+        &transfer(
+            ctx.accounts.buyer.to_account_info().key,
+            ctx.accounts.sell.to_account_info().key,
+            price,
+        ),
+        &[
+            ctx.accounts.buyer.to_account_info(),
+            ctx.accounts.seller.to_account_info(),
+            ctx.accounts.system_program.to_account_info(),
+        ],
+    )?;
 
-        assert_keys_equal(ctx.accounts.token_mint.key(), buyer_token_mint)?;
-        assert_keys_equal(ctx.accounts.token_mint.key(), seller_token_mint)?;
-        assert_keys_equal(ctx.accounts.buyer.key(), buyer_token_owner)?;
-        assert_keys_equal(ctx.accounts.seller.key(), seller_token_owner)?;
-
-        let cpi_fee_program = ctx.accounts.token_program.to_account_info();
-        let cpi_price_program = ctx.accounts.token_program.to_account_info();
-        let cpi_fee_accounts = Transfer {
-            from: ctx.accounts.buyer_token_wallet.to_account_info(),
-            to: ctx.accounts.token_vault.to_account_info(),
-            authority: ctx.accounts.buyer.to_account_info(),
-        };
-        let cpi_fee_ctx = CpiContext::new(cpi_fee_program, cpi_fee_accounts);
-        token::transfer(cpi_fee_ctx, fee)?;
-
-        let cpi_price_accounts = Transfer {
-            from: ctx.accounts.buyer_token_wallet.to_account_info(),
-            to: ctx.accounts.seller_token_wallet.to_account_info(),
-            authority: ctx.accounts.buyer.to_account_info(),
-        };
-        let cpi_price_ctx = CpiContext::new(cpi_price_program, cpi_price_accounts);
-        token::transfer(cpi_price_ctx, price)?;
-    }
+    // send lamports to fee_vault
+    invoke(
+        &transfer(
+            ctx.accounts.buyer.to_account_info().key,
+            ctx.accounts.token_vault.to_account_info().key,
+            fee,
+        ),
+        &[
+            ctx.accounts.buyer.to_account_info(),
+            ctx.accounts.token_vault.to_account_info(),
+            ctx.accounts.system_program.to_account_info(),
+        ],
+    )?;
 
     // Transfer nft to user from vault
     {
@@ -215,10 +168,6 @@ pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
         );
         token::close_account(cpi_close_ctx)?;
     }
-
-    //Update token config
-    // TODO:
-    // token_config.fee += fee;
 
     //Update config info
     config.count_sells -= 1;
