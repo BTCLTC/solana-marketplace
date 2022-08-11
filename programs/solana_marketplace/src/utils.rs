@@ -7,10 +7,10 @@ use anchor_lang::{
     },
 };
 use anchor_spl::token::{Mint, Token, TokenAccount};
-use spl_token::{instruction::initialize_account2};
 use arrayref::array_ref;
+use spl_token::instruction::initialize_account2;
 
-use crate::{ErrorCode};
+use crate::ErrorCode;
 
 pub fn assert_owned_by(account: &AccountInfo, owner: &Pubkey) -> Result<()> {
     if account.owner != owner {
@@ -28,9 +28,7 @@ pub fn assert_keys_equal(key1: Pubkey, key2: Pubkey) -> Result<()> {
     }
 }
 
-pub fn assert_initialized<T: Pack + IsInitialized>(
-    account_info: &AccountInfo,
-) -> Result<T> {
+pub fn assert_initialized<T: Pack + IsInitialized>(account_info: &AccountInfo) -> Result<T> {
     let account: T = T::unpack_unchecked(&account_info.data.borrow())?;
     if !account.is_initialized() {
         return err!(ErrorCode::UninitializedAccount);
@@ -59,11 +57,7 @@ pub fn assert_metadata_valid<'a>(
     Ok(())
 }
 
-pub fn assert_derivation(
-    program_id: &Pubkey,
-    account: &AccountInfo,
-    path: &[&[u8]],
-) -> Result<u8> {
+pub fn assert_derivation(program_id: &Pubkey, account: &AccountInfo, path: &[&[u8]]) -> Result<u8> {
     let (key, bump) = Pubkey::find_program_address(&path, program_id);
     if key != *account.key {
         return err!(ErrorCode::DerivedKeyInvalid);
@@ -72,18 +66,14 @@ pub fn assert_derivation(
 }
 
 /// Cheap method to just grab mint Pubkey from token account, instead of deserializing entire thing
-pub fn get_mint_from_token_account(
-    token_account_info: &AccountInfo,
-) -> Result<Pubkey> {
+pub fn get_mint_from_token_account(token_account_info: &AccountInfo) -> Result<Pubkey> {
     // TokenAccount layout:   mint(32), owner(32), ...
     let data = token_account_info.try_borrow_data()?;
     let mint_data = array_ref![data, 0, 32];
     Ok(Pubkey::new_from_array(*mint_data))
 }
 
-pub fn get_owner_from_token_account(
-    token_account_info: &AccountInfo,
-) -> Result<Pubkey> {
+pub fn get_owner_from_token_account(token_account_info: &AccountInfo) -> Result<Pubkey> {
     // TokenAccount layout:   mint(32), owner(32), ...
     let data = token_account_info.try_borrow_data()?;
     let owner_data = array_ref![data, 32, 32];
@@ -121,7 +111,7 @@ pub fn create_program_token_account_if_not_present<'a>(
                 &treasury_mint.key(),
                 &owner.key(),
             )
-                .unwrap(),
+            .unwrap(),
             &[
                 token_program.to_account_info(),
                 treasury_mint.to_account_info(),
@@ -196,9 +186,7 @@ pub fn create_or_allocate_account_raw<'a>(
     Ok(())
 }
 
-pub fn get_fee_payer<'a, 'b>(
-    wallet: AccountInfo<'a>,
-) -> Result<(AccountInfo<'a>, &'b [&'b [u8]])> {
+pub fn get_fee_payer<'a, 'b>(wallet: AccountInfo<'a>) -> Result<(AccountInfo<'a>, &'b [&'b [u8]])> {
     let seeds: &[&[u8]] = &[];
     let fee_payer: AccountInfo;
     if wallet.is_signer {

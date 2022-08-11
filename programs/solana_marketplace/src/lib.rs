@@ -1,31 +1,27 @@
 pub mod constants;
 pub mod contexts;
-pub mod validate;
 pub mod models;
 pub mod utils;
+pub mod validate;
 
 use crate::contexts::*;
-use crate::validate::*;
 use crate::utils::*;
+use crate::validate::*;
 
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Transfer};
 use solana_program::program::{invoke, invoke_signed};
 use solana_program::system_instruction::transfer;
 
-use crate::{constants::*};
+use crate::constants::*;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("NFTMTNtLozbwJzvLDcdp2qRSgm4tKHxo2eu4cD3nC9y");
 
 #[program]
 pub mod solana_marketplace {
     use super::*;
 
-    pub fn setup(
-        ctx: Context<Setup>,
-        _nonce_config: u8,
-        trade_fee_rate: u64,
-    ) -> Result<()> {
+    pub fn setup(ctx: Context<Setup>, _nonce_config: u8, trade_fee_rate: u64) -> Result<()> {
         msg!("Set up");
         let config = &mut ctx.accounts.config;
         config.owner = ctx.accounts.owner.key();
@@ -36,19 +32,14 @@ pub mod solana_marketplace {
         Ok(())
     }
 
-    pub fn update_config(
-        ctx: Context<UpdateConfig>,
-        trade_fee_rate: u64,
-    ) -> Result<()> {
+    pub fn update_config(ctx: Context<UpdateConfig>, trade_fee_rate: u64) -> Result<()> {
         msg!("Update Config");
         let config = &mut ctx.accounts.config;
         config.trade_fee_rate = trade_fee_rate;
         Ok(())
     }
 
-    pub fn toggle_freeze_program(
-        ctx: Context<ProgramFreeze>,
-    ) -> Result<()> {
+    pub fn toggle_freeze_program(ctx: Context<ProgramFreeze>) -> Result<()> {
         msg!("Toggle Freeze Program");
         let config = &mut ctx.accounts.config;
         config.freeze_program = !config.freeze_program;
@@ -56,19 +47,12 @@ pub mod solana_marketplace {
         Ok(())
     }
 
-    pub fn init_token_account(
-        _ctx: Context<InitTokenAccount>,
-        _token_type: u8,
-    ) -> Result<()> {
+    pub fn init_token_account(_ctx: Context<InitTokenAccount>, _token_type: u8) -> Result<()> {
         msg!("Init Set up TokenConfig");
         Ok(())
     }
 
-    pub fn token_setup(
-        ctx: Context<TokenSetUp>,
-        _token_type: u8,
-        _nonce: u8,
-    ) -> Result<()> {
+    pub fn token_setup(ctx: Context<TokenSetUp>, _token_type: u8, _nonce: u8) -> Result<()> {
         msg!("Set up TokenConfig");
         let token_config = &mut ctx.accounts.token_config;
 
@@ -81,10 +65,7 @@ pub mod solana_marketplace {
         Ok(())
     }
 
-    pub fn toggle_freeze_token(
-        ctx: Context<TokenFreeze>,
-        _token_type: u8,
-    ) -> Result<()> {
+    pub fn toggle_freeze_token(ctx: Context<TokenFreeze>, _token_type: u8) -> Result<()> {
         msg!("Toggle Freeze Token");
         let token_config = &mut ctx.accounts.token_config;
         token_config.freeze = !token_config.freeze;
@@ -93,11 +74,7 @@ pub mod solana_marketplace {
     }
 
     #[access_control(start_sell_available(& ctx.accounts))]
-    pub fn start_sell(
-        ctx: Context<StartSell>,
-        _token_type: u8,
-        price: u64,
-    ) -> Result<()> {
+    pub fn start_sell(ctx: Context<StartSell>, _token_type: u8, price: u64) -> Result<()> {
         msg!("Start Sell");
         let now_ts = Clock::get().unwrap().unix_timestamp;
         let config = &mut ctx.accounts.config;
@@ -122,8 +99,10 @@ pub mod solana_marketplace {
         if is_native {
             assert_keys_equal(ctx.accounts.user.key(), ctx.accounts.user_token_vault.key())?;
         } else {
-            let user_token_vault_mint = get_mint_from_token_account(&ctx.accounts.user_token_vault)?;
-            let user_token_vault_owner = get_owner_from_token_account(&ctx.accounts.user_token_vault)?;
+            let user_token_vault_mint =
+                get_mint_from_token_account(&ctx.accounts.user_token_vault)?;
+            let user_token_vault_owner =
+                get_owner_from_token_account(&ctx.accounts.user_token_vault)?;
             assert_keys_equal(ctx.accounts.token_mint.key(), user_token_vault_mint)?;
             assert_keys_equal(ctx.accounts.user.key(), user_token_vault_owner)?;
         }
@@ -145,11 +124,7 @@ pub mod solana_marketplace {
     }
 
     #[access_control(update_sell_available(& ctx.accounts))]
-    pub fn update_sell(
-        ctx: Context<UpdateSell>,
-        _token_type: u8,
-        price: u64,
-    ) -> Result<()> {
+    pub fn update_sell(ctx: Context<UpdateSell>, _token_type: u8, price: u64) -> Result<()> {
         msg!("Update Sell");
 
         require!(price > 0, ErrorCode::InvalidTokenAmount);
@@ -161,10 +136,7 @@ pub mod solana_marketplace {
     }
 
     #[access_control(close_sell_available(& ctx.accounts))]
-    pub fn close_sell(
-        ctx: Context<CloseSell>,
-        _token_type: u8,
-    ) -> Result<()> {
+    pub fn close_sell(ctx: Context<CloseSell>, _token_type: u8) -> Result<()> {
         msg!("Close Sell");
         let config = &mut ctx.accounts.config;
         // Transfer nft to user from vault
@@ -173,7 +145,7 @@ pub mod solana_marketplace {
             let seeds = &[
                 NFT_VAULT_PDA_SEED.as_ref(),
                 ctx.accounts.nft_mint.to_account_info().key.as_ref(),
-                &[nft_vault_bump]
+                &[nft_vault_bump],
             ];
             let signer = &[&seeds[..]];
             let cpi_ctx = CpiContext::new_with_signer(
@@ -206,10 +178,7 @@ pub mod solana_marketplace {
     }
 
     #[access_control(buy_available(& ctx.accounts))]
-    pub fn buy(
-        ctx: Context<Buy>,
-        _token_type: u8,
-    ) -> Result<()> {
+    pub fn buy(ctx: Context<Buy>, _token_type: u8) -> Result<()> {
         msg!("Buy");
         let config = &mut ctx.accounts.config;
         let token_config = &mut ctx.accounts.token_config;
@@ -232,8 +201,14 @@ pub mod solana_marketplace {
 
         let is_native = ctx.accounts.token_mint.key() == spl_token::native_mint::id();
         if is_native {
-            assert_keys_equal(ctx.accounts.buyer.key(), ctx.accounts.buyer_token_wallet.key())?;
-            assert_keys_equal(ctx.accounts.seller.key(), ctx.accounts.seller_token_wallet.key())?;
+            assert_keys_equal(
+                ctx.accounts.buyer.key(),
+                ctx.accounts.buyer_token_wallet.key(),
+            )?;
+            assert_keys_equal(
+                ctx.accounts.seller.key(),
+                ctx.accounts.seller_token_wallet.key(),
+            )?;
             // send lamports to seller
             invoke(
                 &transfer(
@@ -244,7 +219,7 @@ pub mod solana_marketplace {
                 &[
                     ctx.accounts.buyer.to_account_info(),
                     ctx.accounts.seller.to_account_info(),
-                    ctx.accounts.system_program.to_account_info()
+                    ctx.accounts.system_program.to_account_info(),
                 ],
             )?;
 
@@ -258,7 +233,7 @@ pub mod solana_marketplace {
                 &[
                     ctx.accounts.buyer.to_account_info(),
                     ctx.accounts.token_vault.to_account_info(),
-                    ctx.accounts.system_program.to_account_info()
+                    ctx.accounts.system_program.to_account_info(),
                 ],
             )?;
         } else {
@@ -266,7 +241,8 @@ pub mod solana_marketplace {
             let buyer_token_mint = get_mint_from_token_account(&ctx.accounts.buyer_token_wallet)?;
             let seller_token_mint = get_mint_from_token_account(&ctx.accounts.seller_token_wallet)?;
             let buyer_token_owner = get_owner_from_token_account(&ctx.accounts.buyer_token_wallet)?;
-            let seller_token_owner = get_owner_from_token_account(&ctx.accounts.seller_token_wallet)?;
+            let seller_token_owner =
+                get_owner_from_token_account(&ctx.accounts.seller_token_wallet)?;
 
             assert_keys_equal(ctx.accounts.token_mint.key(), buyer_token_mint)?;
             assert_keys_equal(ctx.accounts.token_mint.key(), seller_token_mint)?;
@@ -298,7 +274,7 @@ pub mod solana_marketplace {
             let seeds = &[
                 NFT_VAULT_PDA_SEED.as_ref(),
                 ctx.accounts.nft_mint.to_account_info().key.as_ref(),
-                &[nft_vault_bump]
+                &[nft_vault_bump],
             ];
             let signer = &[&seeds[..]];
             let cpi_ctx = CpiContext::new_with_signer(
@@ -351,7 +327,10 @@ pub mod solana_marketplace {
         let is_native = ctx.accounts.token_mint.key() == spl_token::native_mint::id();
         if is_native {
             // lock lamports to token_vault
-            assert_keys_equal(ctx.accounts.buyer.key(), ctx.accounts.buyer_token_wallet.key())?;
+            assert_keys_equal(
+                ctx.accounts.buyer.key(),
+                ctx.accounts.buyer_token_wallet.key(),
+            )?;
             invoke(
                 &transfer(
                     ctx.accounts.buyer_token_wallet.to_account_info().key,
@@ -361,7 +340,7 @@ pub mod solana_marketplace {
                 &[
                     ctx.accounts.buyer.to_account_info(),
                     ctx.accounts.token_vault.to_account_info(),
-                    ctx.accounts.system_program.to_account_info()
+                    ctx.accounts.system_program.to_account_info(),
                 ],
             )?;
         } else {
@@ -401,20 +380,23 @@ pub mod solana_marketplace {
     }
 
     #[access_control(cancel_offer_available(& ctx.accounts))]
-    pub fn cancel_offer(
-        ctx: Context<CancelOffer>,
-        _token_type: u8,
-        _sell_id: u64,
-    ) -> Result<()> {
+    pub fn cancel_offer(ctx: Context<CancelOffer>, _token_type: u8, _sell_id: u64) -> Result<()> {
         msg!("Cancel Offer");
         let sell = &mut ctx.accounts.sell;
         let offer = &mut ctx.accounts.offer;
 
         let is_native = ctx.accounts.token_mint.key() == spl_token::native_mint::id();
         let token_vault_bump = *ctx.bumps.get("token_vault").unwrap();
-        let token_vault_seeds = [TOKEN_VAULT_PDA_SEED.as_ref(), &[_token_type], &[token_vault_bump]];
+        let token_vault_seeds = [
+            TOKEN_VAULT_PDA_SEED.as_ref(),
+            &[_token_type],
+            &[token_vault_bump],
+        ];
         if is_native {
-            assert_keys_equal(ctx.accounts.buyer.key(), ctx.accounts.buyer_token_wallet.key())?;
+            assert_keys_equal(
+                ctx.accounts.buyer.key(),
+                ctx.accounts.buyer_token_wallet.key(),
+            )?;
             invoke_signed(
                 &transfer(
                     ctx.accounts.token_vault.key,
@@ -424,7 +406,7 @@ pub mod solana_marketplace {
                 &[
                     ctx.accounts.token_vault.to_account_info(),
                     ctx.accounts.buyer.to_account_info(),
-                    ctx.accounts.system_program.to_account_info()
+                    ctx.accounts.system_program.to_account_info(),
                 ],
                 &[&token_vault_seeds],
             )?;
@@ -455,11 +437,7 @@ pub mod solana_marketplace {
     }
 
     #[access_control(accept_offer_available(& ctx.accounts))]
-    pub fn accept_offer(
-        ctx: Context<AcceptOffer>,
-        _token_type: u8,
-        _sell_id: u64,
-    ) -> Result<()> {
+    pub fn accept_offer(ctx: Context<AcceptOffer>, _token_type: u8, _sell_id: u64) -> Result<()> {
         msg!("Accept Offer");
         let config = &mut ctx.accounts.config;
         let token_config = &mut ctx.accounts.token_config;
@@ -481,11 +459,18 @@ pub mod solana_marketplace {
             .unwrap();
 
         let token_vault_bump = *ctx.bumps.get("token_vault").unwrap();
-        let token_vault_seeds = [TOKEN_VAULT_PDA_SEED.as_ref(), &[_token_type], &[token_vault_bump]];
+        let token_vault_seeds = [
+            TOKEN_VAULT_PDA_SEED.as_ref(),
+            &[_token_type],
+            &[token_vault_bump],
+        ];
 
         let is_native = ctx.accounts.token_mint.key() == spl_token::native_mint::id();
         if is_native {
-            assert_keys_equal(ctx.accounts.seller.key(), ctx.accounts.seller_token_wallet.key())?;
+            assert_keys_equal(
+                ctx.accounts.seller.key(),
+                ctx.accounts.seller_token_wallet.key(),
+            )?;
             // send lamports to seller
             invoke_signed(
                 &transfer(
@@ -496,13 +481,14 @@ pub mod solana_marketplace {
                 &[
                     ctx.accounts.token_vault.to_account_info(),
                     ctx.accounts.seller.to_account_info(),
-                    ctx.accounts.system_program.to_account_info()
+                    ctx.accounts.system_program.to_account_info(),
                 ],
                 &[&token_vault_seeds],
             )?;
         } else {
             let seller_token_mint = get_mint_from_token_account(&ctx.accounts.seller_token_wallet)?;
-            let seller_token_owner = get_owner_from_token_account(&ctx.accounts.seller_token_wallet)?;
+            let seller_token_owner =
+                get_owner_from_token_account(&ctx.accounts.seller_token_wallet)?;
 
             assert_keys_equal(ctx.accounts.token_mint.key(), seller_token_mint)?;
             assert_keys_equal(ctx.accounts.seller.key(), seller_token_owner)?;
@@ -526,7 +512,7 @@ pub mod solana_marketplace {
             let seeds = &[
                 NFT_VAULT_PDA_SEED.as_ref(),
                 ctx.accounts.nft_mint.to_account_info().key.as_ref(),
-                &[nft_vault_bump]
+                &[nft_vault_bump],
             ];
             let signer = &[&seeds[..]];
             let cpi_ctx = CpiContext::new_with_signer(

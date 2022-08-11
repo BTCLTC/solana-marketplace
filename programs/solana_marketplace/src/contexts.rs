@@ -1,8 +1,8 @@
-use anchor_lang::prelude::*;
-use anchor_spl::token::{TokenAccount, Token, Mint};
-use crate::{ErrorCode};
 use crate::constants::*;
 use crate::models::*;
+use crate::ErrorCode;
+use anchor_lang::prelude::*;
+use anchor_spl::token::{Mint, Token, TokenAccount};
 
 #[derive(Accounts)]
 pub struct Setup<'info> {
