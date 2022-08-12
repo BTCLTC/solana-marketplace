@@ -16,7 +16,7 @@ pub struct StartSell<'info> {
     #[account(
         mut,
         seeds = [CONFIG_PDA_SEED.as_ref()],
-        bump = config.load()?.nonce
+        bump = config.load()?.bump
     )]
     pub config: AccountLoader<'info, Config>,
 

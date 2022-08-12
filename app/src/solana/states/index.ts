@@ -1,2 +1,2 @@
-export { getSellingResource } from './sellingResource';
-export { getStore } from './store';
+export { getConfig } from './config';
+export { getSell } from './sell';

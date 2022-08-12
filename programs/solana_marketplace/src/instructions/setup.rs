@@ -32,7 +32,7 @@ pub struct Setup<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-pub fn setup_handler(ctx: Context<Setup>, nonce: u8, fee_rate: u64) -> Result<()> {
+pub fn setup_handler(ctx: Context<Setup>, bump: u8, fee_rate: u64) -> Result<()> {
     require!(fee_rate <= 10000, ErrorCode::FeeRateError);
 
     let mut config = ctx.accounts.config.load_init()?;
@@ -42,6 +42,6 @@ pub fn setup_handler(ctx: Context<Setup>, nonce: u8, fee_rate: u64) -> Result<()
     config.fee_rate = fee_rate;
     config.order_id = 1;
     config.freeze_program = false;
-    config.nonce = nonce;
+    config.bump = bump;
     Ok(())
 }

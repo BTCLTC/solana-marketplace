@@ -10,7 +10,7 @@ pub struct Config {
     pub order_id: u64,
     pub order_count: u64,
     pub freeze_program: bool,
-    pub nonce: u8,
+    pub bump: u8,
 }
 
 impl Config {

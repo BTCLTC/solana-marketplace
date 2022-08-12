@@ -39,7 +39,7 @@ export type SolanaMarketplace = {
       ];
       args: [
         {
-          name: 'nonce';
+          name: 'bump';
           type: 'u8';
         },
         {
@@ -390,7 +390,7 @@ export type SolanaMarketplace = {
             type: 'bool';
           },
           {
-            name: 'nonce';
+            name: 'bump';
             type: 'u8';
           }
         ];
@@ -534,7 +534,7 @@ export const IDL: SolanaMarketplace = {
       ],
       args: [
         {
-          name: 'nonce',
+          name: 'bump',
           type: 'u8',
         },
         {
@@ -885,7 +885,7 @@ export const IDL: SolanaMarketplace = {
             type: 'bool',
           },
           {
-            name: 'nonce',
+            name: 'bump',
             type: 'u8',
           },
         ],

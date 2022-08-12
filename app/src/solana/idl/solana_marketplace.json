@@ -39,7 +39,7 @@
       ],
       "args": [
         {
-          "name": "nonce",
+          "name": "bump",
           "type": "u8"
         },
         {
@@ -390,7 +390,7 @@
             "type": "bool"
           },
           {
-            "name": "nonce",
+            "name": "bump",
             "type": "u8"
           }
         ]

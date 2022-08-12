@@ -7,7 +7,7 @@ import { useAnchorWallet } from '@solana/wallet-adapter-react';
 
 import { SolanaMarketplace } from '../solana/types/solana_marketplace';
 import idl from '../idl/solana_marketplace.json';
-import { programId, connectionURL } from '../utils';
+import { programId, connectionURL } from '../solana/utils';
 import { getStore } from '../solana/states';
 import { createStore } from '../solana/instructions';
 

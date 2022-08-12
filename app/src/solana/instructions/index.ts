@@ -1,2 +1,2 @@
 export { setup } from './setup';
-export { createStore } from './createStore';
+export { toggleFreezeProgram } from './toggleFreezeProgram';

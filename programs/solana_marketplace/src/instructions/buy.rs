@@ -22,7 +22,7 @@ pub struct Buy<'info> {
     #[account(
         mut,
         seeds = [CONFIG_PDA_SEED.as_ref()],
-        bump = config.load()?.nonce,
+        bump = config.load()?.bump,
         has_one=fee_account
     )]
     pub config: AccountLoader<'info, Config>,
