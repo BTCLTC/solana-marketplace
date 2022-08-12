@@ -1,15 +1,19 @@
 mod buy;
 mod close_sell;
-mod freeze_program;
+mod sell;
 mod setup;
-mod start_sell;
-mod update_config;
-mod update_sell;
+mod toggle_freeze_program;
+mod update_fee_account;
+mod update_fee_rate;
+mod update_owner;
+mod update_sell_price;
 
 pub use buy::*;
 pub use close_sell::*;
-pub use freeze_program::*;
+pub use sell::*;
 pub use setup::*;
-pub use start_sell::*;
-pub use update_config::*;
-pub use update_sell::*;
+pub use toggle_freeze_program::*;
+pub use update_fee_account::*;
+pub use update_fee_rate::*;
+pub use update_owner::*;
+pub use update_sell_price::*;

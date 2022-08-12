@@ -9,6 +9,7 @@ pub struct Setup<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
 
+    /// CHECK: This is not dangerous because we don't read or write from this account
     pub fee_account: AccountInfo<'info>,
 
     #[account(

@@ -73,7 +73,7 @@ pub struct StartSell<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-pub fn start_sell_handle(ctx: Context<StartSell>, price: u64) -> Result<()> {
+pub fn sell_handle(ctx: Context<StartSell>, price: u64) -> Result<()> {
     let now_ts = Clock::get().unwrap().unix_timestamp;
     let mut config = ctx.accounts.config.load_mut()?;
     let mut sell = ctx.accounts.sell.load_init()?;

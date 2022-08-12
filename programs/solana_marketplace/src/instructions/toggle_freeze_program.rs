@@ -15,7 +15,7 @@ pub struct ProgramFreeze<'info> {
     pub config: AccountLoader<'info, Config>,
 }
 
-pub fn feeze_program_handler(ctx: Context<ProgramFreeze>) -> Result<()> {
+pub fn toggle_feeze_program_handler(ctx: Context<ProgramFreeze>) -> Result<()> {
     let mut config = ctx.accounts.config.load_mut()?;
     config.freeze_program = !config.freeze_program;
     Ok(())

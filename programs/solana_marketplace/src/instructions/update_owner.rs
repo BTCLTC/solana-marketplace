@@ -3,9 +3,12 @@ use anchor_lang::prelude::*;
 use crate::{constants::CONFIG_PDA_SEED, state::Config};
 
 #[derive(Accounts)]
-pub struct UpdateConfig<'info> {
+pub struct UpdateOwner<'info> {
     #[account(address = config.load()?.owner)]
     pub owner: Signer<'info>,
+
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    pub new_owner: AccountInfo<'info>,
 
     #[account(
         mut,
@@ -16,8 +19,8 @@ pub struct UpdateConfig<'info> {
     pub config: AccountLoader<'info, Config>,
 }
 
-pub fn update_config_handler(ctx: Context<UpdateConfig>, trade_fee_rate: u64) -> Result<()> {
+pub fn update_owner_handler(ctx: Context<UpdateOwner>) -> Result<()> {
     let mut config = ctx.accounts.config.load_mut()?;
-    config.trade_fee_rate = trade_fee_rate;
+    config.owner = ctx.accounts.new_owner.key();
     Ok(())
 }

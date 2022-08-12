@@ -49,7 +49,7 @@ pub struct UpdateSell<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-pub fn update_sell_handler(ctx: Context<UpdateSell>, price: u64) -> Result<()> {
+pub fn update_sell_price_handler(ctx: Context<UpdateSell>, price: u64) -> Result<()> {
     require!(price > 0, ErrorCode::InvalidTokenAmount);
 
     let mut sell = ctx.accounts.sell.load_mut()?;
