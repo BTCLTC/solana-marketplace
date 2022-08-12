@@ -5,7 +5,8 @@ use anchor_lang::prelude::*;
 pub struct Config {
     pub owner: Pubkey,
     pub fee_account: Pubkey,
-    pub fee_rate: u64, /* % */
+    /// (0-10000), 1: 0.01%; 10: 0.1%; 100: 1%; 1000: 10%; 10000: 100%
+    pub fee_rate: u64,
     pub order_id: u64,
     pub order_count: u64,
     pub freeze_program: bool,

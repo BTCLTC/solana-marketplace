@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::{constants::CONFIG_PDA_SEED, state::Config};
+use crate::{constants::CONFIG_PDA_SEED, errors::ErrorCode, state::Config};
 
 #[derive(Accounts)]
 pub struct UpdateFeeRate<'info> {
@@ -17,6 +17,8 @@ pub struct UpdateFeeRate<'info> {
 }
 
 pub fn update_fee_rate_handler(ctx: Context<UpdateFeeRate>, fee_rate: u64) -> Result<()> {
+    require!(fee_rate <= 10000, ErrorCode::FeeRateError);
+
     let mut config = ctx.accounts.config.load_mut()?;
     config.fee_rate = fee_rate;
     Ok(())

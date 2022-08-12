@@ -92,7 +92,7 @@ pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
     let fee: u64 = (sell.price as u128)
         .checked_mul(config.fee_rate as u128)
         .unwrap()
-        .checked_div(100)
+        .checked_div(10000)
         .unwrap()
         .try_into()
         .unwrap();

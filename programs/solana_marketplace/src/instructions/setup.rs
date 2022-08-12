@@ -2,7 +2,7 @@ use anchor_lang::{prelude::*, system_program};
 use anchor_spl::token::{self, Token};
 use solana_program::sysvar::rent;
 
-use crate::{constants::CONFIG_PDA_SEED, state::Config};
+use crate::{constants::CONFIG_PDA_SEED, errors::ErrorCode, state::Config};
 
 #[derive(Accounts)]
 pub struct Setup<'info> {
@@ -33,12 +33,14 @@ pub struct Setup<'info> {
 }
 
 pub fn setup_handler(ctx: Context<Setup>, nonce: u8, fee_rate: u64) -> Result<()> {
+    require!(fee_rate <= 10000, ErrorCode::FeeRateError);
+
     let mut config = ctx.accounts.config.load_init()?;
     config.owner = ctx.accounts.owner.key();
     config.fee_account = ctx.accounts.fee_account.key();
     config.order_count = 0;
     config.fee_rate = fee_rate;
-    config.order_id = 0;
+    config.order_id = 1;
     config.freeze_program = false;
     config.nonce = nonce;
     Ok(())

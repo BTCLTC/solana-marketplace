@@ -5,6 +5,9 @@ pub enum ErrorCode {
     #[msg("The contract frozen")]
     FreezeProgramError,
 
+    #[msg("Fee Rate Error")]
+    FeeRateError,
+
     #[msg("Invalid Request")]
     InvalidRequestError,
 
