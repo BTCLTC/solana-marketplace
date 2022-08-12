@@ -11,6 +11,11 @@ export type SolanaMarketplace = {
           isSigner: true;
         },
         {
+          name: 'feeAccount';
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: 'config';
           isMut: true;
           isSigner: false;
@@ -34,21 +39,42 @@ export type SolanaMarketplace = {
       ];
       args: [
         {
-          name: 'nonceConfig';
+          name: 'nonce';
           type: 'u8';
         },
         {
-          name: 'tradeFeeRate';
+          name: 'feeRate';
           type: 'u64';
         }
       ];
     },
     {
-      name: 'updateConfig';
+      name: 'updateFeeAccount';
       accounts: [
         {
           name: 'owner';
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: 'feeAccount';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'config';
           isMut: true;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: 'updateFeeRate';
+      accounts: [
+        {
+          name: 'owner';
+          isMut: false;
           isSigner: true;
         },
         {
@@ -59,17 +85,38 @@ export type SolanaMarketplace = {
       ];
       args: [
         {
-          name: 'tradeFeeRate';
+          name: 'feeRate';
           type: 'u64';
         }
       ];
+    },
+    {
+      name: 'updateOwner';
+      accounts: [
+        {
+          name: 'owner';
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: 'newOwner';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'config';
+          isMut: true;
+          isSigner: false;
+        }
+      ];
+      args: [];
     },
     {
       name: 'toggleFreezeProgram';
       accounts: [
         {
           name: 'owner';
-          isMut: true;
+          isMut: false;
           isSigner: true;
         },
         {
@@ -81,131 +128,7 @@ export type SolanaMarketplace = {
       args: [];
     },
     {
-      name: 'initTokenAccount';
-      accounts: [
-        {
-          name: 'owner';
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: 'config';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'tokenMint';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'tokenVault';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
-          docs: ['used by anchor for init of the token'];
-        },
-        {
-          name: 'tokenProgram';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'rent';
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: 'tokenType';
-          type: 'u8';
-        }
-      ];
-    },
-    {
-      name: 'tokenSetup';
-      accounts: [
-        {
-          name: 'owner';
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: 'config';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'tokenConfig';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'tokenMint';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'tokenVault';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
-          docs: ['used by anchor for init of the token'];
-        },
-        {
-          name: 'tokenProgram';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'rent';
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: 'tokenType';
-          type: 'u8';
-        },
-        {
-          name: 'nonce';
-          type: 'u8';
-        }
-      ];
-    },
-    {
-      name: 'toggleFreezeToken';
-      accounts: [
-        {
-          name: 'owner';
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: 'tokenConfig';
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: 'tokenType';
-          type: 'u8';
-        }
-      ];
-    },
-    {
-      name: 'startSell';
+      name: 'sell';
       accounts: [
         {
           name: 'user';
@@ -215,11 +138,6 @@ export type SolanaMarketplace = {
         {
           name: 'config';
           isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'tokenConfig';
-          isMut: false;
           isSigner: false;
         },
         {
@@ -243,11 +161,6 @@ export type SolanaMarketplace = {
           isSigner: false;
         },
         {
-          name: 'userTokenVault';
-          isMut: true;
-          isSigner: false;
-        },
-        {
           name: 'sell';
           isMut: true;
           isSigner: false;
@@ -271,17 +184,13 @@ export type SolanaMarketplace = {
       ];
       args: [
         {
-          name: 'tokenType';
-          type: 'u8';
-        },
-        {
           name: 'price';
           type: 'u64';
         }
       ];
     },
     {
-      name: 'updateSell';
+      name: 'updateSellPrice';
       accounts: [
         {
           name: 'user';
@@ -290,11 +199,6 @@ export type SolanaMarketplace = {
         },
         {
           name: 'config';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'tokenConfig';
           isMut: false;
           isSigner: false;
         },
@@ -326,10 +230,6 @@ export type SolanaMarketplace = {
         }
       ];
       args: [
-        {
-          name: 'tokenType';
-          type: 'u8';
-        },
         {
           name: 'price';
           type: 'u64';
@@ -350,11 +250,6 @@ export type SolanaMarketplace = {
           isSigner: false;
         },
         {
-          name: 'tokenConfig';
-          isMut: false;
-          isSigner: false;
-        },
-        {
           name: 'nftMint';
           isMut: false;
           isSigner: false;
@@ -391,12 +286,7 @@ export type SolanaMarketplace = {
           isSigner: false;
         }
       ];
-      args: [
-        {
-          name: 'tokenType';
-          type: 'u8';
-        }
-      ];
+      args: [];
     },
     {
       name: 'buy';
@@ -417,11 +307,6 @@ export type SolanaMarketplace = {
           isSigner: false;
         },
         {
-          name: 'tokenConfig';
-          isMut: true;
-          isSigner: false;
-        },
-        {
           name: 'nftMint';
           isMut: false;
           isSigner: false;
@@ -442,18 +327,8 @@ export type SolanaMarketplace = {
           isSigner: false;
         },
         {
-          name: 'tokenVault';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'buyerTokenWallet';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'sellerTokenWallet';
-          isMut: true;
+          name: 'feeAccount';
+          isMut: false;
           isSigner: false;
         },
         {
@@ -478,259 +353,7 @@ export type SolanaMarketplace = {
           isSigner: false;
         }
       ];
-      args: [
-        {
-          name: 'tokenType';
-          type: 'u8';
-        }
-      ];
-    },
-    {
-      name: 'applyOffer';
-      accounts: [
-        {
-          name: 'buyer';
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: 'config';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'tokenConfig';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'nftMint';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'tokenMint';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'tokenVault';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'buyerTokenWallet';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'sell';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'offer';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
-          docs: ['used by anchor for init of the token'];
-        },
-        {
-          name: 'tokenProgram';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'rent';
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: 'tokenType';
-          type: 'u8';
-        },
-        {
-          name: 'sellId';
-          type: 'u64';
-        },
-        {
-          name: 'price';
-          type: 'u64';
-        }
-      ];
-    },
-    {
-      name: 'cancelOffer';
-      accounts: [
-        {
-          name: 'buyer';
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: 'config';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'tokenConfig';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'nftMint';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'tokenMint';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'tokenVault';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'buyerTokenWallet';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'sell';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'offer';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
-          docs: ['used by anchor for init of the token'];
-        },
-        {
-          name: 'tokenProgram';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'rent';
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: 'tokenType';
-          type: 'u8';
-        },
-        {
-          name: 'sellId';
-          type: 'u64';
-        }
-      ];
-    },
-    {
-      name: 'acceptOffer';
-      accounts: [
-        {
-          name: 'seller';
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: 'buyer';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'config';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'tokenConfig';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'nftMint';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'nftVault';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'buyerNftVault';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'tokenMint';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'tokenVault';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'sellerTokenWallet';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'sell';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'offer';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
-          docs: ['used by anchor for init of the token'];
-        },
-        {
-          name: 'tokenProgram';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'rent';
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: 'tokenType';
-          type: 'u8';
-        },
-        {
-          name: 'sellId';
-          type: 'u64';
-        }
-      ];
+      args: [];
     }
   ];
   accounts: [
@@ -744,59 +367,26 @@ export type SolanaMarketplace = {
             type: 'publicKey';
           },
           {
-            name: 'countSells';
+            name: 'feeAccount';
+            type: 'publicKey';
+          },
+          {
+            name: 'feeRate';
+            docs: [
+              '(0-10000), 1: 0.01%; 10: 0.1%; 100: 1%; 1000: 10%; 10000: 100%'
+            ];
             type: 'u64';
           },
           {
-            name: 'tradeFeeRate';
+            name: 'orderId';
             type: 'u64';
           },
           {
-            name: 'sellId';
-            type: 'u64';
-          },
-          {
-            name: 'offerId';
+            name: 'orderCount';
             type: 'u64';
           },
           {
             name: 'freezeProgram';
-            type: 'bool';
-          },
-          {
-            name: 'nonce';
-            type: 'u8';
-          }
-        ];
-      };
-    },
-    {
-      name: 'tokenConfig';
-      type: {
-        kind: 'struct';
-        fields: [
-          {
-            name: 'owner';
-            type: 'publicKey';
-          },
-          {
-            name: 'tokenType';
-            type: 'u8';
-          },
-          {
-            name: 'tokenMint';
-            type: 'publicKey';
-          },
-          {
-            name: 'tokenVault';
-            type: 'publicKey';
-          },
-          {
-            name: 'fee';
-            type: 'u64';
-          },
-          {
-            name: 'freeze';
             type: 'bool';
           },
           {
@@ -820,10 +410,6 @@ export type SolanaMarketplace = {
             type: 'publicKey';
           },
           {
-            name: 'ownerTokenVault';
-            type: 'publicKey';
-          },
-          {
             name: 'nftMint';
             type: 'publicKey';
           },
@@ -836,54 +422,6 @@ export type SolanaMarketplace = {
             type: 'u64';
           },
           {
-            name: 'tokenType';
-            type: 'u8';
-          },
-          {
-            name: 'offerCount';
-            type: 'u64';
-          },
-          {
-            name: 'createdAt';
-            type: 'u64';
-          }
-        ];
-      };
-    },
-    {
-      name: 'offer';
-      type: {
-        kind: 'struct';
-        fields: [
-          {
-            name: 'id';
-            type: 'u64';
-          },
-          {
-            name: 'sellId';
-            type: 'u64';
-          },
-          {
-            name: 'owner';
-            type: 'publicKey';
-          },
-          {
-            name: 'seller';
-            type: 'publicKey';
-          },
-          {
-            name: 'nftMint';
-            type: 'publicKey';
-          },
-          {
-            name: 'offerPrice';
-            type: 'u64';
-          },
-          {
-            name: 'priceType';
-            type: 'u8';
-          },
-          {
             name: 'createdAt';
             type: 'u64';
           }
@@ -894,88 +432,63 @@ export type SolanaMarketplace = {
   errors: [
     {
       code: 6000;
-      name: 'PermissionError';
-      msg: 'Permission Error, E1000';
+      name: 'FreezeProgramError';
+      msg: 'The contract frozen';
     },
     {
       code: 6001;
-      name: 'FreezeProgramError';
-      msg: 'The contract frozen, E1001';
+      name: 'FeeRateError';
+      msg: 'Fee Rate Error';
     },
     {
       code: 6002;
-      name: 'FreezeTokenError';
-      msg: 'The token frozen, E1002';
+      name: 'InvalidRequestError';
+      msg: 'Invalid Request';
     },
     {
       code: 6003;
-      name: 'NFTLockedError';
-      msg: 'NFT Locked, E1003';
+      name: 'InsufficientSolAmountError';
+      msg: 'Not enough SOL';
     },
     {
       code: 6004;
-      name: 'InvalidRequestError';
-      msg: 'Invalid Request, E1004';
+      name: 'InsufficientMinAmountError';
+      msg: 'The amount is small than min price';
     },
     {
       code: 6005;
-      name: 'TradeNotAvailableError';
-      msg: 'Trade not available, E1005';
+      name: 'IncorrectOwner';
+      msg: 'IncorrectOwner';
     },
     {
       code: 6006;
-      name: 'NoMemberError';
-      msg: 'Not exist member, E1006';
+      name: 'DerivedKeyInvalid';
+      msg: 'Derived key invalid';
     },
     {
       code: 6007;
-      name: 'InsufficientSolAmountError';
-      msg: 'Not enough SOL, E1007';
+      name: 'MetadataNotExist';
+      msg: "Metadata doesn't exist";
     },
     {
       code: 6008;
-      name: 'InsufficientTokenAmountError';
-      msg: 'Not enough Token, E1008';
+      name: 'PublicKeyMismatch';
+      msg: 'PublicKeyMismatch';
     },
     {
       code: 6009;
-      name: 'InsufficientMinAmountError';
-      msg: 'The amount is small than min price, E1009';
+      name: 'UninitializedAccount';
+      msg: 'UninitializedAccount';
     },
     {
       code: 6010;
-      name: 'IncorrectOwner';
-      msg: 'IncorrectOwner, E1010';
+      name: 'NoPayerPresent';
+      msg: 'No payer present on this txn';
     },
     {
       code: 6011;
-      name: 'DerivedKeyInvalid';
-      msg: 'Derived key invalid, E1011';
-    },
-    {
-      code: 6012;
-      name: 'MetadataDoesntExist';
-      msg: "Metadata doesn't exist, E1012";
-    },
-    {
-      code: 6013;
-      name: 'PublicKeyMismatch';
-      msg: 'PublicKeyMismatch, E1013';
-    },
-    {
-      code: 6014;
-      name: 'UninitializedAccount';
-      msg: 'UninitializedAccount, E1014';
-    },
-    {
-      code: 6015;
-      name: 'NoPayerPresent';
-      msg: 'No payer present on this txn, E1015';
-    },
-    {
-      code: 6016;
       name: 'InvalidTokenAmount';
-      msg: 'Invalid token amount, E1016';
+      msg: 'Invalid token amount';
     }
   ];
 };
@@ -993,6 +506,11 @@ export const IDL: SolanaMarketplace = {
           isSigner: true,
         },
         {
+          name: 'feeAccount',
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: 'config',
           isMut: true,
           isSigner: false,
@@ -1016,21 +534,42 @@ export const IDL: SolanaMarketplace = {
       ],
       args: [
         {
-          name: 'nonceConfig',
+          name: 'nonce',
           type: 'u8',
         },
         {
-          name: 'tradeFeeRate',
+          name: 'feeRate',
           type: 'u64',
         },
       ],
     },
     {
-      name: 'updateConfig',
+      name: 'updateFeeAccount',
       accounts: [
         {
           name: 'owner',
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: 'feeAccount',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'config',
           isMut: true,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: 'updateFeeRate',
+      accounts: [
+        {
+          name: 'owner',
+          isMut: false,
           isSigner: true,
         },
         {
@@ -1041,17 +580,38 @@ export const IDL: SolanaMarketplace = {
       ],
       args: [
         {
-          name: 'tradeFeeRate',
+          name: 'feeRate',
           type: 'u64',
         },
       ],
+    },
+    {
+      name: 'updateOwner',
+      accounts: [
+        {
+          name: 'owner',
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: 'newOwner',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'config',
+          isMut: true,
+          isSigner: false,
+        },
+      ],
+      args: [],
     },
     {
       name: 'toggleFreezeProgram',
       accounts: [
         {
           name: 'owner',
-          isMut: true,
+          isMut: false,
           isSigner: true,
         },
         {
@@ -1063,131 +623,7 @@ export const IDL: SolanaMarketplace = {
       args: [],
     },
     {
-      name: 'initTokenAccount',
-      accounts: [
-        {
-          name: 'owner',
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: 'config',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'tokenMint',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'tokenVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false,
-          docs: ['used by anchor for init of the token'],
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'rent',
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: 'tokenType',
-          type: 'u8',
-        },
-      ],
-    },
-    {
-      name: 'tokenSetup',
-      accounts: [
-        {
-          name: 'owner',
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: 'config',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'tokenConfig',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'tokenMint',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'tokenVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false,
-          docs: ['used by anchor for init of the token'],
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'rent',
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: 'tokenType',
-          type: 'u8',
-        },
-        {
-          name: 'nonce',
-          type: 'u8',
-        },
-      ],
-    },
-    {
-      name: 'toggleFreezeToken',
-      accounts: [
-        {
-          name: 'owner',
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: 'tokenConfig',
-          isMut: true,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: 'tokenType',
-          type: 'u8',
-        },
-      ],
-    },
-    {
-      name: 'startSell',
+      name: 'sell',
       accounts: [
         {
           name: 'user',
@@ -1197,11 +633,6 @@ export const IDL: SolanaMarketplace = {
         {
           name: 'config',
           isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'tokenConfig',
-          isMut: false,
           isSigner: false,
         },
         {
@@ -1225,11 +656,6 @@ export const IDL: SolanaMarketplace = {
           isSigner: false,
         },
         {
-          name: 'userTokenVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
           name: 'sell',
           isMut: true,
           isSigner: false,
@@ -1253,17 +679,13 @@ export const IDL: SolanaMarketplace = {
       ],
       args: [
         {
-          name: 'tokenType',
-          type: 'u8',
-        },
-        {
           name: 'price',
           type: 'u64',
         },
       ],
     },
     {
-      name: 'updateSell',
+      name: 'updateSellPrice',
       accounts: [
         {
           name: 'user',
@@ -1272,11 +694,6 @@ export const IDL: SolanaMarketplace = {
         },
         {
           name: 'config',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'tokenConfig',
           isMut: false,
           isSigner: false,
         },
@@ -1308,10 +725,6 @@ export const IDL: SolanaMarketplace = {
         },
       ],
       args: [
-        {
-          name: 'tokenType',
-          type: 'u8',
-        },
         {
           name: 'price',
           type: 'u64',
@@ -1332,11 +745,6 @@ export const IDL: SolanaMarketplace = {
           isSigner: false,
         },
         {
-          name: 'tokenConfig',
-          isMut: false,
-          isSigner: false,
-        },
-        {
           name: 'nftMint',
           isMut: false,
           isSigner: false,
@@ -1373,12 +781,7 @@ export const IDL: SolanaMarketplace = {
           isSigner: false,
         },
       ],
-      args: [
-        {
-          name: 'tokenType',
-          type: 'u8',
-        },
-      ],
+      args: [],
     },
     {
       name: 'buy',
@@ -1399,11 +802,6 @@ export const IDL: SolanaMarketplace = {
           isSigner: false,
         },
         {
-          name: 'tokenConfig',
-          isMut: true,
-          isSigner: false,
-        },
-        {
           name: 'nftMint',
           isMut: false,
           isSigner: false,
@@ -1424,18 +822,8 @@ export const IDL: SolanaMarketplace = {
           isSigner: false,
         },
         {
-          name: 'tokenVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'buyerTokenWallet',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'sellerTokenWallet',
-          isMut: true,
+          name: 'feeAccount',
+          isMut: false,
           isSigner: false,
         },
         {
@@ -1460,259 +848,7 @@ export const IDL: SolanaMarketplace = {
           isSigner: false,
         },
       ],
-      args: [
-        {
-          name: 'tokenType',
-          type: 'u8',
-        },
-      ],
-    },
-    {
-      name: 'applyOffer',
-      accounts: [
-        {
-          name: 'buyer',
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: 'config',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'tokenConfig',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'nftMint',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'tokenMint',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'tokenVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'buyerTokenWallet',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'sell',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'offer',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false,
-          docs: ['used by anchor for init of the token'],
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'rent',
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: 'tokenType',
-          type: 'u8',
-        },
-        {
-          name: 'sellId',
-          type: 'u64',
-        },
-        {
-          name: 'price',
-          type: 'u64',
-        },
-      ],
-    },
-    {
-      name: 'cancelOffer',
-      accounts: [
-        {
-          name: 'buyer',
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: 'config',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'tokenConfig',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'nftMint',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'tokenMint',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'tokenVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'buyerTokenWallet',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'sell',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'offer',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false,
-          docs: ['used by anchor for init of the token'],
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'rent',
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: 'tokenType',
-          type: 'u8',
-        },
-        {
-          name: 'sellId',
-          type: 'u64',
-        },
-      ],
-    },
-    {
-      name: 'acceptOffer',
-      accounts: [
-        {
-          name: 'seller',
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: 'buyer',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'config',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'tokenConfig',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'nftMint',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'nftVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'buyerNftVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'tokenMint',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'tokenVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'sellerTokenWallet',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'sell',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'offer',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false,
-          docs: ['used by anchor for init of the token'],
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'rent',
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: 'tokenType',
-          type: 'u8',
-        },
-        {
-          name: 'sellId',
-          type: 'u64',
-        },
-      ],
+      args: [],
     },
   ],
   accounts: [
@@ -1726,59 +862,26 @@ export const IDL: SolanaMarketplace = {
             type: 'publicKey',
           },
           {
-            name: 'countSells',
+            name: 'feeAccount',
+            type: 'publicKey',
+          },
+          {
+            name: 'feeRate',
+            docs: [
+              '(0-10000), 1: 0.01%; 10: 0.1%; 100: 1%; 1000: 10%; 10000: 100%',
+            ],
             type: 'u64',
           },
           {
-            name: 'tradeFeeRate',
+            name: 'orderId',
             type: 'u64',
           },
           {
-            name: 'sellId',
-            type: 'u64',
-          },
-          {
-            name: 'offerId',
+            name: 'orderCount',
             type: 'u64',
           },
           {
             name: 'freezeProgram',
-            type: 'bool',
-          },
-          {
-            name: 'nonce',
-            type: 'u8',
-          },
-        ],
-      },
-    },
-    {
-      name: 'tokenConfig',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'owner',
-            type: 'publicKey',
-          },
-          {
-            name: 'tokenType',
-            type: 'u8',
-          },
-          {
-            name: 'tokenMint',
-            type: 'publicKey',
-          },
-          {
-            name: 'tokenVault',
-            type: 'publicKey',
-          },
-          {
-            name: 'fee',
-            type: 'u64',
-          },
-          {
-            name: 'freeze',
             type: 'bool',
           },
           {
@@ -1802,10 +905,6 @@ export const IDL: SolanaMarketplace = {
             type: 'publicKey',
           },
           {
-            name: 'ownerTokenVault',
-            type: 'publicKey',
-          },
-          {
             name: 'nftMint',
             type: 'publicKey',
           },
@@ -1818,54 +917,6 @@ export const IDL: SolanaMarketplace = {
             type: 'u64',
           },
           {
-            name: 'tokenType',
-            type: 'u8',
-          },
-          {
-            name: 'offerCount',
-            type: 'u64',
-          },
-          {
-            name: 'createdAt',
-            type: 'u64',
-          },
-        ],
-      },
-    },
-    {
-      name: 'offer',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'id',
-            type: 'u64',
-          },
-          {
-            name: 'sellId',
-            type: 'u64',
-          },
-          {
-            name: 'owner',
-            type: 'publicKey',
-          },
-          {
-            name: 'seller',
-            type: 'publicKey',
-          },
-          {
-            name: 'nftMint',
-            type: 'publicKey',
-          },
-          {
-            name: 'offerPrice',
-            type: 'u64',
-          },
-          {
-            name: 'priceType',
-            type: 'u8',
-          },
-          {
             name: 'createdAt',
             type: 'u64',
           },
@@ -1876,88 +927,63 @@ export const IDL: SolanaMarketplace = {
   errors: [
     {
       code: 6000,
-      name: 'PermissionError',
-      msg: 'Permission Error, E1000',
+      name: 'FreezeProgramError',
+      msg: 'The contract frozen',
     },
     {
       code: 6001,
-      name: 'FreezeProgramError',
-      msg: 'The contract frozen, E1001',
+      name: 'FeeRateError',
+      msg: 'Fee Rate Error',
     },
     {
       code: 6002,
-      name: 'FreezeTokenError',
-      msg: 'The token frozen, E1002',
+      name: 'InvalidRequestError',
+      msg: 'Invalid Request',
     },
     {
       code: 6003,
-      name: 'NFTLockedError',
-      msg: 'NFT Locked, E1003',
+      name: 'InsufficientSolAmountError',
+      msg: 'Not enough SOL',
     },
     {
       code: 6004,
-      name: 'InvalidRequestError',
-      msg: 'Invalid Request, E1004',
+      name: 'InsufficientMinAmountError',
+      msg: 'The amount is small than min price',
     },
     {
       code: 6005,
-      name: 'TradeNotAvailableError',
-      msg: 'Trade not available, E1005',
+      name: 'IncorrectOwner',
+      msg: 'IncorrectOwner',
     },
     {
       code: 6006,
-      name: 'NoMemberError',
-      msg: 'Not exist member, E1006',
+      name: 'DerivedKeyInvalid',
+      msg: 'Derived key invalid',
     },
     {
       code: 6007,
-      name: 'InsufficientSolAmountError',
-      msg: 'Not enough SOL, E1007',
+      name: 'MetadataNotExist',
+      msg: "Metadata doesn't exist",
     },
     {
       code: 6008,
-      name: 'InsufficientTokenAmountError',
-      msg: 'Not enough Token, E1008',
+      name: 'PublicKeyMismatch',
+      msg: 'PublicKeyMismatch',
     },
     {
       code: 6009,
-      name: 'InsufficientMinAmountError',
-      msg: 'The amount is small than min price, E1009',
+      name: 'UninitializedAccount',
+      msg: 'UninitializedAccount',
     },
     {
       code: 6010,
-      name: 'IncorrectOwner',
-      msg: 'IncorrectOwner, E1010',
+      name: 'NoPayerPresent',
+      msg: 'No payer present on this txn',
     },
     {
       code: 6011,
-      name: 'DerivedKeyInvalid',
-      msg: 'Derived key invalid, E1011',
-    },
-    {
-      code: 6012,
-      name: 'MetadataDoesntExist',
-      msg: "Metadata doesn't exist, E1012",
-    },
-    {
-      code: 6013,
-      name: 'PublicKeyMismatch',
-      msg: 'PublicKeyMismatch, E1013',
-    },
-    {
-      code: 6014,
-      name: 'UninitializedAccount',
-      msg: 'UninitializedAccount, E1014',
-    },
-    {
-      code: 6015,
-      name: 'NoPayerPresent',
-      msg: 'No payer present on this txn, E1015',
-    },
-    {
-      code: 6016,
       name: 'InvalidTokenAmount',
-      msg: 'Invalid token amount, E1016',
+      msg: 'Invalid token amount',
     },
   ],
 };

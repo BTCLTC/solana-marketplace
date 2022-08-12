@@ -2,7 +2,7 @@ use anchor_lang::{prelude::*, system_program};
 use anchor_spl::token::{self, Token};
 use solana_program::sysvar::rent;
 
-use crate::{constants::CONFIG_PDA_SEED, errors::ErrorCode, state::Config};
+use crate::{constants::CONFIG_PDA_SEED, errors::ErrorCode, states::Config};
 
 #[derive(Accounts)]
 pub struct Setup<'info> {

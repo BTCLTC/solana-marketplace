@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::{constants::CONFIG_PDA_SEED, errors::ErrorCode, state::Config};
+use crate::{constants::CONFIG_PDA_SEED, errors::ErrorCode, states::Config};
 
 #[derive(Accounts)]
 pub struct UpdateFeeRate<'info> {

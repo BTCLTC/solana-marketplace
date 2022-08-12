@@ -5,7 +5,7 @@ use solana_program::sysvar::rent;
 use crate::{
     constants::{CONFIG_PDA_SEED, NFT_VAULT_PDA_SEED, SELL_PDA_SEED},
     errors::ErrorCode,
-    state::{Config, Sell},
+    states::{Config, Sell},
 };
 
 #[derive(Accounts)]

@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::{constants::CONFIG_PDA_SEED, state::Config};
+use crate::{constants::CONFIG_PDA_SEED, states::Config};
 
 #[derive(Accounts)]
 pub struct ProgramFreeze<'info> {
