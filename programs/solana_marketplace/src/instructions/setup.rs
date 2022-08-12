@@ -32,11 +32,12 @@ pub struct Setup<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-pub fn setup_handler(ctx: Context<Setup>, nonce: u8, trade_fee_rate: u64) -> Result<()> {
+pub fn setup_handler(ctx: Context<Setup>, nonce: u8, fee_rate: u64) -> Result<()> {
     let mut config = ctx.accounts.config.load_init()?;
     config.owner = ctx.accounts.owner.key();
-    config.count_sells = 0;
-    config.trade_fee_rate = trade_fee_rate;
+    config.fee_account = ctx.accounts.fee_account.key();
+    config.order_count = 0;
+    config.fee_rate = fee_rate;
     config.order_id = 0;
     config.freeze_program = false;
     config.nonce = nonce;

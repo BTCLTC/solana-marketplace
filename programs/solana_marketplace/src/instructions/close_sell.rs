@@ -105,7 +105,7 @@ pub fn close_sell_handler(ctx: Context<CloseSell>) -> Result<()> {
     }
 
     //Update config info
-    config.count_sells -= 1;
+    config.order_count -= 1;
 
     Ok(())
 }

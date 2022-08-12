@@ -21,8 +21,8 @@ pub struct StartSell<'info> {
     pub config: AccountLoader<'info, Config>,
 
     #[account(
-    constraint = nft_mint.supply == 1,
-    constraint = nft_mint.decimals == 0
+        constraint = nft_mint.supply == 1,
+        constraint = nft_mint.decimals == 0
     )]
     pub nft_mint: Box<Account<'info, Mint>>,
 
@@ -102,7 +102,7 @@ pub fn sell_handle(ctx: Context<StartSell>, price: u64) -> Result<()> {
     sell.created_at = now_ts as u64;
 
     // Update config
-    config.count_sells += 1;
+    config.order_count += 1;
     config.order_id += 1;
 
     Ok(())

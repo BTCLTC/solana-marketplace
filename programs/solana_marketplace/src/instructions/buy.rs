@@ -90,7 +90,7 @@ pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
 
     // Payment
     let fee: u64 = (sell.price as u128)
-        .checked_mul(config.trade_fee_rate as u128)
+        .checked_mul(config.fee_rate as u128)
         .unwrap()
         .checked_div(100)
         .unwrap()
@@ -165,6 +165,6 @@ pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
     }
 
     //Update config info
-    config.count_sells -= 1;
+    config.order_count -= 1;
     Ok(())
 }

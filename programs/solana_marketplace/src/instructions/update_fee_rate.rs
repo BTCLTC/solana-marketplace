@@ -16,8 +16,8 @@ pub struct UpdateFeeRate<'info> {
     pub config: AccountLoader<'info, Config>,
 }
 
-pub fn update_fee_rate_handler(ctx: Context<UpdateFeeRate>, trade_fee_rate: u64) -> Result<()> {
+pub fn update_fee_rate_handler(ctx: Context<UpdateFeeRate>, fee_rate: u64) -> Result<()> {
     let mut config = ctx.accounts.config.load_mut()?;
-    config.trade_fee_rate = trade_fee_rate;
+    config.fee_rate = fee_rate;
     Ok(())
 }
