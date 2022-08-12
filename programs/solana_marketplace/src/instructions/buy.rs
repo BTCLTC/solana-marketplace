@@ -1,11 +1,10 @@
 use anchor_lang::{prelude::*, system_program};
-use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
+use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use solana_program::{program::invoke, system_instruction::transfer, sysvar::rent};
 
 use crate::{
-    constants::{CONFIG_PDA_SEED, NFT_VAULT_PDA_SEED, SELL_PDA_SEED, TOKEN_VAULT_PDA_SEED},
+    constants::{CONFIG_PDA_SEED, NFT_VAULT_PDA_SEED, SELL_PDA_SEED},
     state::{Config, Sell},
-    utils::{assert_keys_equal, get_mint_from_token_account, get_owner_from_token_account},
 };
 
 #[derive(Accounts)]
@@ -23,7 +22,8 @@ pub struct Buy<'info> {
     #[account(
         mut,
         seeds = [CONFIG_PDA_SEED.as_ref()],
-        bump = config.load()?.nonce
+        bump = config.load()?.nonce,
+        has_one=fee_account
     )]
     pub config: AccountLoader<'info, Config>,
 
@@ -54,13 +54,8 @@ pub struct Buy<'info> {
     #[account(address = spl_token::native_mint::ID)]
     pub token_mint: Box<Account<'info, Mint>>,
 
-    #[account(
-        mut,
-        seeds = [TOKEN_VAULT_PDA_SEED.as_ref()],
-        bump
-    )]
-    /// CHECK: This is not dangerous because we don't read or write from this account
-    pub token_vault: UncheckedAccount<'info>,
+    #[account(address = config.load()?.fee_account)]
+    pub fee_account: AccountInfo<'info>,
 
     #[account(
         mut,
@@ -107,7 +102,6 @@ pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
         .try_into()
         .unwrap();
 
-
     // send lamports to seller
     invoke(
         &transfer(
@@ -126,12 +120,12 @@ pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
     invoke(
         &transfer(
             ctx.accounts.buyer.to_account_info().key,
-            ctx.accounts.token_vault.to_account_info().key,
+            ctx.accounts.fee_account.to_account_info().key,
             fee,
         ),
         &[
             ctx.accounts.buyer.to_account_info(),
-            ctx.accounts.token_vault.to_account_info(),
+            ctx.accounts.fee_account.to_account_info(),
             ctx.accounts.system_program.to_account_info(),
         ],
     )?;

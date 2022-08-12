@@ -1,5 +1,5 @@
 use anchor_lang::{prelude::*, system_program};
-use anchor_spl::token::{Mint, TokenAccount, self, Token};
+use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use solana_program::sysvar::rent;
 
 use crate::{

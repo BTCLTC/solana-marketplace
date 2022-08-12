@@ -52,7 +52,7 @@ pub fn assert_metadata_valid<'a>(
     )?;
 
     if metadata.data_is_empty() {
-        return err!(ErrorCode::MetadataDoesntExist);
+        return err!(ErrorCode::MetadataNotExist);
     }
     Ok(())
 }
@@ -103,7 +103,6 @@ pub fn create_program_token_account_if_not_present<'a>(
             fee_seeds,
             signer_seeds,
         )?;
-        msg!("This.");
         invoke_signed(
             &initialize_account2(
                 &token_program.key,
@@ -121,7 +120,6 @@ pub fn create_program_token_account_if_not_present<'a>(
             ],
             &[&signer_seeds],
         )?;
-        msg!("Passes");
     }
     Ok(())
 }
@@ -146,7 +144,6 @@ pub fn create_or_allocate_account_raw<'a>(
         .saturating_sub(new_account_info.lamports());
 
     if required_lamports > 0 {
-        msg!("Transfer {} lamports to the new account", required_lamports);
         let seeds: &[&[&[u8]]];
         let as_arr = [signer_seeds];
 
@@ -168,20 +165,17 @@ pub fn create_or_allocate_account_raw<'a>(
 
     let accounts = &[new_account_info.clone(), system_program_info.clone()];
 
-    msg!("Allocate space for the account {}", new_account_info.key);
     invoke_signed(
         &system_instruction::allocate(new_account_info.key, size.try_into().unwrap()),
         accounts,
         &[&new_acct_seeds],
     )?;
 
-    msg!("Assign the account to the owning program");
     invoke_signed(
         &system_instruction::assign(new_account_info.key, &program_id),
         accounts,
         &[&new_acct_seeds],
     )?;
-    msg!("Completed assignation!");
 
     Ok(())
 }

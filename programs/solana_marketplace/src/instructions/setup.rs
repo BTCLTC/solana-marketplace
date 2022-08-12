@@ -9,6 +9,8 @@ pub struct Setup<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
 
+    pub fee_account: AccountInfo<'info>,
+
     #[account(
         init,
         payer = owner,

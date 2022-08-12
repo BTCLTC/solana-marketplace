@@ -1,6 +1,4 @@
-use crate::{
-    Buy, CloseSell, errors::ErrorCode, StartSell, UpdateSell,
-};
+use crate::{errors::ErrorCode, Buy, CloseSell, StartSell, UpdateSell};
 use anchor_lang::prelude::*;
 
 pub fn start_sell_available(accounts: &StartSell) -> Result<()> {
@@ -54,4 +52,3 @@ pub fn buy_available(accounts: &Buy) -> Result<()> {
 
     Ok(())
 }
-

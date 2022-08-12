@@ -2,54 +2,36 @@ use anchor_lang::prelude::*;
 
 #[error_code]
 pub enum ErrorCode {
-    #[msg("Permission Error, E1000")]
-    PermissionError,
-
-    #[msg("The contract frozen, E1001")]
+    #[msg("The contract frozen")]
     FreezeProgramError,
 
-    #[msg("The token frozen, E1002")]
-    FreezeTokenError,
-
-    #[msg("NFT Locked, E1003")]
-    NFTLockedError,
-
-    #[msg("Invalid Request, E1004")]
+    #[msg("Invalid Request")]
     InvalidRequestError,
 
-    #[msg("Trade not available, E1005")]
-    TradeNotAvailableError,
-
-    #[msg("Not exist member, E1006")]
-    NoMemberError,
-
-    #[msg("Not enough SOL, E1007")]
+    #[msg("Not enough SOL")]
     InsufficientSolAmountError,
 
-    #[msg("Not enough Token, E1008")]
-    InsufficientTokenAmountError,
-
-    #[msg("The amount is small than min price, E1009")]
+    #[msg("The amount is small than min price")]
     InsufficientMinAmountError,
 
-    #[msg("IncorrectOwner, E1010")]
+    #[msg("IncorrectOwner")]
     IncorrectOwner,
 
-    #[msg("Derived key invalid, E1011")]
+    #[msg("Derived key invalid")]
     DerivedKeyInvalid,
 
-    #[msg("Metadata doesn't exist, E1012")]
-    MetadataDoesntExist,
+    #[msg("Metadata doesn't exist")]
+    MetadataNotExist,
 
-    #[msg("PublicKeyMismatch, E1013")]
+    #[msg("PublicKeyMismatch")]
     PublicKeyMismatch,
 
-    #[msg("UninitializedAccount, E1014")]
+    #[msg("UninitializedAccount")]
     UninitializedAccount,
 
-    #[msg("No payer present on this txn, E1015")]
+    #[msg("No payer present on this txn")]
     NoPayerPresent,
 
-    #[msg("Invalid token amount, E1016")]
+    #[msg("Invalid token amount")]
     InvalidTokenAmount,
 }

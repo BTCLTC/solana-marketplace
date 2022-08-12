@@ -4,6 +4,7 @@ use anchor_lang::prelude::*;
 #[derive(Default)]
 pub struct Config {
     pub owner: Pubkey,
+    pub fee_account: Pubkey,
     pub count_sells: u64,
     pub trade_fee_rate: u64, /* % */
     pub order_id: u64,
@@ -12,5 +13,5 @@ pub struct Config {
 }
 
 impl Config {
-    pub const LEN: usize = 32 + (8 * 3) + 1 + 1;
+    pub const LEN: usize = (32 * 2) + (8 * 3) + 1 + 1;
 }
