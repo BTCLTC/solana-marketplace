@@ -51,9 +51,6 @@ pub struct Buy<'info> {
     )]
     pub buyer_nft_vault: Box<Account<'info, TokenAccount>>,
 
-    #[account(address = spl_token::native_mint::ID)]
-    pub token_mint: Box<Account<'info, Mint>>,
-
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(address = config.load()?.fee_account)]
     pub fee_account: AccountInfo<'info>,

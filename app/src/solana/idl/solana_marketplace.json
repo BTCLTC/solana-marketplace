@@ -156,11 +156,6 @@
           "isSigner": false
         },
         {
-          "name": "tokenMint",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "sell",
           "isMut": true,
           "isSigner": false
@@ -319,11 +314,6 @@
         {
           "name": "buyerNftVault",
           "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenMint",
-          "isMut": false,
           "isSigner": false
         },
         {
@@ -490,8 +480,5 @@
       "name": "InvalidTokenAmount",
       "msg": "Invalid token amount"
     }
-  ],
-  "metadata": {
-    "address": "NFTMTNtLozbwJzvLDcdp2qRSgm4tKHxo2eu4cD3nC9y"
-  }
+  ]
 }

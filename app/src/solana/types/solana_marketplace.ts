@@ -156,11 +156,6 @@ export type SolanaMarketplace = {
           isSigner: false;
         },
         {
-          name: 'tokenMint';
-          isMut: false;
-          isSigner: false;
-        },
-        {
           name: 'sell';
           isMut: true;
           isSigner: false;
@@ -319,11 +314,6 @@ export type SolanaMarketplace = {
         {
           name: 'buyerNftVault';
           isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'tokenMint';
-          isMut: false;
           isSigner: false;
         },
         {
@@ -651,11 +641,6 @@ export const IDL: SolanaMarketplace = {
           isSigner: false,
         },
         {
-          name: 'tokenMint',
-          isMut: false,
-          isSigner: false,
-        },
-        {
           name: 'sell',
           isMut: true,
           isSigner: false,
@@ -814,11 +799,6 @@ export const IDL: SolanaMarketplace = {
         {
           name: 'buyerNftVault',
           isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'tokenMint',
-          isMut: false,
           isSigner: false,
         },
         {

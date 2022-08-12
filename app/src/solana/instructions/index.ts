@@ -1,2 +1,9 @@
+export { buy } from './buy';
+export { closeSell } from './closeSell';
+export { sell } from './sell';
 export { setup } from './setup';
 export { toggleFreezeProgram } from './toggleFreezeProgram';
+export { updateFeeAccount } from './updateFeeAccount';
+export { updateFeeRate } from './updateFeeRate';
+export { updateOwner } from './updateOwner';
+export { updateSellPrice } from './updateSellPrice';

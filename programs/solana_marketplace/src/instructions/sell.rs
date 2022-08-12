@@ -46,9 +46,6 @@ pub struct StartSell<'info> {
     )]
     pub user_nft_vault: Box<Account<'info, TokenAccount>>,
 
-    #[account(address = spl_token::native_mint::ID)]
-    pub token_mint: Box<Account<'info, Mint>>,
-
     #[account(
         init,
         payer = user,
