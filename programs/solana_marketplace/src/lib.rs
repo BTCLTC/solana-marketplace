@@ -10,7 +10,7 @@ use crate::validate::*;
 
 use anchor_lang::prelude::*;
 
-declare_id!("NFTMTNtLozbwJzvLDcdp2qRSgm4tKHxo2eu4cD3nC9y");
+declare_id!("NFTMCFJD7ACCQr29CXeyqgMJe2HhdQJBDEMpSfTcqCk");
 
 #[program]
 pub mod solana_marketplace {

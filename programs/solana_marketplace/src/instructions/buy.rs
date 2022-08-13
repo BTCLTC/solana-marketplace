@@ -7,6 +7,18 @@ use crate::{
     states::{Config, Sell},
 };
 
+#[event]
+pub struct BuyEvent {
+    order_id: u64,
+    buyer: Pubkey,
+    seller: Pubkey,
+    nft_mint: Pubkey,
+    nft_vault: Pubkey,
+    buyer_nft_vault: Pubkey,
+    price: u64,
+    created_at: u64,
+}
+
 #[derive(Accounts)]
 pub struct Buy<'info> {
     #[account(mut)]
@@ -57,7 +69,7 @@ pub struct Buy<'info> {
 
     #[account(
         mut,
-        constraint = sell.load()?.owner == seller.key(),
+        constraint = sell.load()?.seller == seller.key(),
         constraint = sell.load()?.nft_mint == nft_mint.key(),
         constraint = sell.load()?.nft_vault == nft_vault.key(),
         seeds = [
@@ -86,13 +98,17 @@ pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
     let sell = &mut ctx.accounts.sell.load()?;
 
     // Payment
-    let fee: u64 = (sell.price as u128)
+    let mut fee: u64 = 0;
+
+    if config.fee_rate > 0 {
+        fee = (sell.price as u128)
         .checked_mul(config.fee_rate as u128)
         .unwrap()
         .checked_div(10000)
         .unwrap()
         .try_into()
         .unwrap();
+    }
 
     let price: u64 = (sell.price as u128)
         .checked_sub(fee as u128)
@@ -114,19 +130,21 @@ pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
         ],
     )?;
 
-    // send lamports to fee_vault
-    invoke(
-        &transfer(
-            ctx.accounts.buyer.to_account_info().key,
-            ctx.accounts.fee_account.to_account_info().key,
-            fee,
-        ),
-        &[
-            ctx.accounts.buyer.to_account_info(),
-            ctx.accounts.fee_account.to_account_info(),
-            ctx.accounts.system_program.to_account_info(),
-        ],
-    )?;
+    if fee > 0 {
+        // send lamports to fee_vault
+        invoke(
+            &transfer(
+                ctx.accounts.buyer.to_account_info().key,
+                ctx.accounts.fee_account.to_account_info().key,
+                fee,
+            ),
+            &[
+                ctx.accounts.buyer.to_account_info(),
+                ctx.accounts.fee_account.to_account_info(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+        )?;
+    }
 
     // Transfer nft to user from vault
     {
@@ -163,5 +181,20 @@ pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
 
     //Update config info
     config.order_count -= 1;
+
+    let now_ts = Clock::get().unwrap().unix_timestamp;
+    // buy event
+    emit!(
+        BuyEvent {
+            order_id: config.order_id,
+            buyer: ctx.accounts.buyer.key(),
+            seller: ctx.accounts.seller.key(),
+            nft_mint: ctx.accounts.nft_mint.key(),
+            nft_vault: ctx.accounts.nft_vault.key(),
+            buyer_nft_vault: ctx.accounts.buyer_nft_vault.key(),
+            price,
+            created_at: now_ts as u64,
+        }
+    );
     Ok(())
 }

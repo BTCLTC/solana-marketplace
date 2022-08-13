@@ -480,5 +480,8 @@
       "name": "InvalidTokenAmount",
       "msg": "Invalid token amount"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "NFTMCFJD7ACCQr29CXeyqgMJe2HhdQJBDEMpSfTcqCk"
+  }
 }

@@ -17,7 +17,7 @@ pub struct Setup<'info> {
         payer = owner,
         seeds = [CONFIG_PDA_SEED.as_ref()],
         bump,
-        space = 8 + Config::LEN
+        space = 16 + Config::LEN
     )]
     pub config: AccountLoader<'info, Config>,
 

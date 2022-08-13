@@ -12,7 +12,7 @@ export const setup = async (
   const [config, bump] = await findConfigAddress();
 
   return await program.methods
-    .setup(bump, new BN(25)) // 25: 0.25% feeRate
+    .setup(bump, new BN(0)) // 25: 0.25% feeRate; 0-10000
     .accounts({
       owner: provider.wallet.publicKey,
       feeAccount: feeAccountPublicKey,

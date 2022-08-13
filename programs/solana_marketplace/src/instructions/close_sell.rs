@@ -7,10 +7,19 @@ use crate::{
     states::{Config, Sell},
 };
 
+#[event]
+pub struct CloseSellEvent {
+    order_id: u64,
+    seller: Pubkey,
+    nft_mint: Pubkey,
+    nft_vault: Pubkey,
+    created_at: u64,
+}
+
 #[derive(Accounts)]
 pub struct CloseSell<'info> {
     #[account(mut)]
-    pub user: Signer<'info>,
+    pub seller: Signer<'info>,
 
     #[account(
         mut,
@@ -39,21 +48,21 @@ pub struct CloseSell<'info> {
     #[account(
         mut,
         constraint = user_nft_vault.mint == nft_mint.key(),
-        constraint = user_nft_vault.owner == user.key()
+        constraint = user_nft_vault.owner == seller.key()
     )]
     pub user_nft_vault: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,
-        constraint = sell.load()?.owner == user.key(),
+        constraint = sell.load()?.seller == seller.key(),
         constraint = sell.load()?.nft_mint == nft_mint.key(),
         constraint = sell.load()?.nft_vault == nft_vault.key(),
         seeds = [
             SELL_PDA_SEED.as_ref(),
-            user.key().as_ref(),
+            seller.key().as_ref(),
             nft_mint.key().as_ref(),
         ],
-        close = user,
+        close = seller,
         bump
     )]
     pub sell: AccountLoader<'info, Sell>,
@@ -96,7 +105,7 @@ pub fn close_sell_handler(ctx: Context<CloseSell>) -> Result<()> {
             ctx.accounts.token_program.to_account_info(),
             token::CloseAccount {
                 account: ctx.accounts.nft_vault.to_account_info(),
-                destination: ctx.accounts.user.to_account_info(),
+                destination: ctx.accounts.seller.to_account_info(),
                 authority: ctx.accounts.nft_vault.to_account_info(),
             },
             signer,
@@ -106,6 +115,18 @@ pub fn close_sell_handler(ctx: Context<CloseSell>) -> Result<()> {
 
     //Update config info
     config.order_count -= 1;
+
+    let now_ts = Clock::get().unwrap().unix_timestamp;
+    // close event
+    emit!(
+        CloseSellEvent {
+            order_id: config.order_id,
+            seller: ctx.accounts.seller.key(),
+            nft_mint: ctx.accounts.nft_mint.key(),
+            nft_vault: ctx.accounts.nft_vault.key(),
+            created_at: now_ts as u64,
+        }
+    );
 
     Ok(())
 }

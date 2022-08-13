@@ -8,10 +8,20 @@ use crate::{
     states::{Config, Sell},
 };
 
+#[event]
+pub struct SellEvent {
+    order_id: u64,
+    seller: Pubkey,
+    nft_mint: Pubkey,
+    nft_vault: Pubkey,
+    price: u64,
+    created_at: u64,
+}
+
 #[derive(Accounts)]
 pub struct StartSell<'info> {
     #[account(mut)]
-    pub user: Signer<'info>,
+    pub seller: Signer<'info>,
 
     #[account(
         mut,
@@ -28,7 +38,7 @@ pub struct StartSell<'info> {
 
     #[account(
         init,
-        payer = user,
+        payer = seller,
         token::mint = nft_mint,
         token::authority = nft_vault,
         seeds = [
@@ -42,20 +52,20 @@ pub struct StartSell<'info> {
     #[account(
         mut,
         constraint = user_nft_vault.mint == nft_mint.key(),
-        constraint = user_nft_vault.owner == user.key()
+        constraint = user_nft_vault.owner == seller.key()
     )]
     pub user_nft_vault: Box<Account<'info, TokenAccount>>,
 
     #[account(
         init,
-        payer = user,
+        payer = seller,
         seeds = [
             SELL_PDA_SEED.as_ref(),
-            user.key().as_ref(),
+            seller.key().as_ref(),
             nft_mint.key().as_ref(),
         ],
         bump,
-        space = 8 + Sell::LEN
+        space = 16 + Sell::LEN
     )]
     pub sell: AccountLoader<'info, Sell>,
 
@@ -84,15 +94,16 @@ pub fn sell_handle(ctx: Context<StartSell>, price: u64) -> Result<()> {
             token::Transfer {
                 from: ctx.accounts.user_nft_vault.to_account_info(),
                 to: ctx.accounts.nft_vault.to_account_info(),
-                authority: ctx.accounts.user.to_account_info(),
+                authority: ctx.accounts.seller.to_account_info(),
             },
         );
         token::transfer(cpi_ctx, 1)?;
     }
 
     // Save Sell info
-    sell.id = config.order_id;
-    sell.owner = ctx.accounts.user.key();
+    let order_id = config.order_id;
+    sell.order_id = config.order_id;
+    sell.seller = ctx.accounts.seller.key();
     sell.nft_mint = ctx.accounts.nft_mint.key();
     sell.nft_vault = ctx.accounts.nft_vault.key();
     sell.price = price;
@@ -101,6 +112,18 @@ pub fn sell_handle(ctx: Context<StartSell>, price: u64) -> Result<()> {
     // Update config
     config.order_count += 1;
     config.order_id += 1;
+
+    // sell event
+    emit!(
+        SellEvent {
+            order_id: order_id,
+            seller: ctx.accounts.seller.key(),
+            nft_mint: ctx.accounts.nft_mint.key(),
+            nft_vault: ctx.accounts.nft_vault.key(),
+            price,
+            created_at: now_ts as u64,
+        }
+    );
 
     Ok(())
 }

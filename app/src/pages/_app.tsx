@@ -16,6 +16,7 @@ import {
 import { clusterApiUrl } from '@solana/web3.js';
 
 import 'windi.css';
+import 'react-toastify/dist/ReactToastify.css';
 import '../styles/base/globals.scss';
 import '../styles/layouts/Header.scss';
 import '../styles/layouts/Footer.scss';

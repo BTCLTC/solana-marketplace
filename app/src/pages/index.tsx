@@ -1,15 +1,15 @@
 import type { NextPage } from 'next';
 import { useEffect, useMemo, useCallback, useState } from 'react';
-import { m } from 'framer-motion';
 import { AnchorProvider, Program } from '@project-serum/anchor';
 import { Connection } from '@solana/web3.js';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
+import { ToastContainer, toast } from 'react-toastify';
 
 import { SolanaMarketplace } from '../solana/types/solana_marketplace';
-import idl from '../idl/solana_marketplace.json';
+import idl from '../solana/idl/solana_marketplace.json';
 import { programId, connectionURL } from '../solana/utils';
-import { getStore } from '../solana/states';
-import { createStore } from '../solana/instructions';
+import { getConfig } from '../solana/states';
+import { setup, toggleFreezeProgram } from '../solana/instructions';
 
 const Home: NextPage = () => {
   const [loading, setLoading] = useState(false);
@@ -37,10 +37,9 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (program) {
-      getStore(program)
+      getConfig(program)
         .then((data) => {
           console.log(data);
-          console.log(`admin pubkey: ${data.admin.toBase58()}`);
         })
         .catch((error) => {
           console.error(error);
@@ -51,15 +50,23 @@ const Home: NextPage = () => {
   const handleClick = useCallback(
     async (fun: string) => {
       if (!provider || !program) {
-        alert('请先连接钱包，并切换到devnet网络');
+        toast.error('请先连接钱包，并切换到devnet网络');
         return;
       }
       setLoading(true);
-      if (fun == 'createStore') {
-        const tx = await createStore(provider, program).catch((error) => {
+      if (fun == 'setup') {
+        const tx = await setup(provider, program).catch((error) => {
           console.log(error.logs);
           setLoading(false);
         });
+        console.log(tx);
+      } else if (fun == 'toggleFreezeProgram') {
+        const tx = await toggleFreezeProgram(provider, program).catch(
+          (error) => {
+            console.log(error.logs);
+            setLoading(false);
+          }
+        );
         console.log(tx);
       }
       setLoading(false);
@@ -68,17 +75,30 @@ const Home: NextPage = () => {
   );
 
   return (
-    <m.div>
-      <button
-        className={`btn btn-active btn-primary normal-case ${
-          loading ? 'loading' : ''
-        }`}
-        onClick={() => handleClick('createStore')}
-        disabled={loading}
-      >
-        createStore
-      </button>
-    </m.div>
+    <main>
+      <ToastContainer />
+      <section className="py-6 px-12 border-1 rounded-xl text-gray-900">
+        <p className="text-center mb-4">admin</p>
+        <button
+          className={`btn btn-active btn-primary normal-case mr-4 ${
+            loading ? 'loading' : ''
+          }`}
+          onClick={() => handleClick('setup')}
+          disabled={loading}
+        >
+          setup
+        </button>
+        <button
+          className={`btn btn-active btn-primary normal-case ${
+            loading ? 'loading' : ''
+          }`}
+          onClick={() => handleClick('toggleFreezeProgram')}
+          disabled={loading}
+        >
+          toggleFreezeProgram
+        </button>
+      </section>
+    </main>
   );
 };
 

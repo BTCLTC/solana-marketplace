@@ -11,7 +11,7 @@ use crate::{
 #[derive(Accounts)]
 pub struct UpdateSell<'info> {
     #[account(mut)]
-    pub user: Signer<'info>,
+    pub seller: Signer<'info>,
 
     #[account(
         seeds = [CONFIG_PDA_SEED.as_ref()],
@@ -27,11 +27,11 @@ pub struct UpdateSell<'info> {
 
     #[account(
         mut,
-        constraint = sell.load()?.owner == user.key(),
+        constraint = sell.load()?.seller == seller.key(),
         constraint = sell.load()?.nft_mint == nft_mint.key(),
         seeds = [
             SELL_PDA_SEED.as_ref(),
-            user.key().as_ref(),
+            seller.key().as_ref(),
             nft_mint.key().as_ref(),
         ],
         bump
