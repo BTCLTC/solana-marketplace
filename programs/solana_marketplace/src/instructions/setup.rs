@@ -41,7 +41,7 @@ pub fn setup_handler(ctx: Context<Setup>, bump: u8, fee_rate: u64) -> Result<()>
     config.order_count = 0;
     config.fee_rate = fee_rate;
     config.order_id = 1;
-    config.freeze_program = false;
+    config.freeze = false;
     config.bump = bump;
     Ok(())
 }

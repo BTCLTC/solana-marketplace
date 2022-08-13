@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 pub fn start_sell_available(accounts: &StartSell) -> Result<()> {
     let config = accounts.config.load()?;
 
-    if config.freeze_program {
+    if config.freeze {
         return err!(ErrorCode::FreezeProgramError);
     }
 
@@ -15,7 +15,7 @@ pub fn update_sell_available(accounts: &UpdateSell) -> Result<()> {
     let config = accounts.config.load()?;
     let sell = accounts.sell.load()?;
 
-    if config.freeze_program {
+    if config.freeze {
         return err!(ErrorCode::FreezeProgramError);
     }
     if sell.created_at == 0 {
@@ -29,7 +29,7 @@ pub fn close_sell_available(accounts: &CloseSell) -> Result<()> {
     let config = accounts.config.load()?;
     let sell = accounts.sell.load()?;
 
-    if config.freeze_program {
+    if config.freeze {
         return err!(ErrorCode::FreezeProgramError);
     }
     if sell.created_at == 0 {
@@ -43,7 +43,7 @@ pub fn buy_available(accounts: &Buy) -> Result<()> {
     let config = accounts.config.load()?;
     let sell = accounts.sell.load()?;
 
-    if config.freeze_program {
+    if config.freeze {
         return err!(ErrorCode::FreezeProgramError);
     }
     if sell.created_at == 0 {

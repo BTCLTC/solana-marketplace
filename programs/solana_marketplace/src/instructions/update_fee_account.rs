@@ -1,10 +1,10 @@
 use anchor_lang::prelude::*;
 
-use crate::{constants::CONFIG_PDA_SEED, states::Config};
+use crate::{states::Config, constants::CONFIG_PDA_SEED};
 
 #[derive(Accounts)]
 pub struct UpdateFeeAccount<'info> {
-    #[account(address = config.load()?.owner)]
+    #[account(mut)]
     pub owner: Signer<'info>,
 
     /// CHECK: This is not dangerous because we don't read or write from this account
@@ -14,7 +14,7 @@ pub struct UpdateFeeAccount<'info> {
     #[account(
         mut,
         seeds = [CONFIG_PDA_SEED.as_ref()],
-        bump,
+        bump = config.load()?.bump,
         has_one=owner
     )]
     pub config: AccountLoader<'info, Config>,

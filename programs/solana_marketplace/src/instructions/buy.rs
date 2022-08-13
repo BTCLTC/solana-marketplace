@@ -3,7 +3,7 @@ use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use solana_program::{program::invoke, system_instruction::transfer, sysvar::rent};
 
 use crate::{
-    constants::{CONFIG_PDA_SEED, NFT_VAULT_PDA_SEED, SELL_PDA_SEED},
+    constants::{NFT_VAULT_PDA_SEED, SELL_PDA_SEED, CONFIG_PDA_SEED},
     states::{Config, Sell},
 };
 
@@ -102,12 +102,12 @@ pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
 
     if config.fee_rate > 0 {
         fee = (sell.price as u128)
-        .checked_mul(config.fee_rate as u128)
-        .unwrap()
-        .checked_div(10000)
-        .unwrap()
-        .try_into()
-        .unwrap();
+            .checked_mul(config.fee_rate as u128)
+            .unwrap()
+            .checked_div(10000)
+            .unwrap()
+            .try_into()
+            .unwrap();
     }
 
     let price: u64 = (sell.price as u128)
@@ -184,17 +184,15 @@ pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
 
     let now_ts = Clock::get().unwrap().unix_timestamp;
     // buy event
-    emit!(
-        BuyEvent {
-            order_id: config.order_id,
-            buyer: ctx.accounts.buyer.key(),
-            seller: ctx.accounts.seller.key(),
-            nft_mint: ctx.accounts.nft_mint.key(),
-            nft_vault: ctx.accounts.nft_vault.key(),
-            buyer_nft_vault: ctx.accounts.buyer_nft_vault.key(),
-            price,
-            created_at: now_ts as u64,
-        }
-    );
+    emit!(BuyEvent {
+        order_id: config.order_id,
+        buyer: ctx.accounts.buyer.key(),
+        seller: ctx.accounts.seller.key(),
+        nft_mint: ctx.accounts.nft_mint.key(),
+        nft_vault: ctx.accounts.nft_vault.key(),
+        buyer_nft_vault: ctx.accounts.buyer_nft_vault.key(),
+        price,
+        created_at: now_ts as u64,
+    });
     Ok(())
 }

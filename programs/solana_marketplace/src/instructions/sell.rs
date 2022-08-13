@@ -3,7 +3,7 @@ use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use solana_program::sysvar::rent;
 
 use crate::{
-    constants::{CONFIG_PDA_SEED, NFT_VAULT_PDA_SEED, SELL_PDA_SEED},
+    constants::{NFT_VAULT_PDA_SEED, SELL_PDA_SEED, CONFIG_PDA_SEED},
     errors::ErrorCode,
     states::{Config, Sell},
 };
@@ -114,16 +114,14 @@ pub fn sell_handle(ctx: Context<StartSell>, price: u64) -> Result<()> {
     config.order_id += 1;
 
     // sell event
-    emit!(
-        SellEvent {
-            order_id: order_id,
-            seller: ctx.accounts.seller.key(),
-            nft_mint: ctx.accounts.nft_mint.key(),
-            nft_vault: ctx.accounts.nft_vault.key(),
-            price,
-            created_at: now_ts as u64,
-        }
-    );
+    emit!(SellEvent {
+        order_id: order_id,
+        seller: ctx.accounts.seller.key(),
+        nft_mint: ctx.accounts.nft_mint.key(),
+        nft_vault: ctx.accounts.nft_vault.key(),
+        price,
+        created_at: now_ts as u64,
+    });
 
     Ok(())
 }

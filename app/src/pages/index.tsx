@@ -9,10 +9,12 @@ import { SolanaMarketplace } from '../solana/types/solana_marketplace';
 import idl from '../solana/idl/solana_marketplace.json';
 import { programId, connectionURL } from '../solana/utils';
 import { getConfig } from '../solana/states';
-import { setup, toggleFreezeProgram } from '../solana/instructions';
+import { setup, toggleFreeze } from '../solana/instructions';
+import { formatTx } from '../utils';
 
 const Home: NextPage = () => {
   const [loading, setLoading] = useState(false);
+  const [config, setConfig] = useState<any>(null);
 
   const wallet = useAnchorWallet();
 
@@ -35,16 +37,20 @@ const Home: NextPage = () => {
     return null;
   }, [provider]);
 
-  useEffect(() => {
+  const getConfigInfo = useCallback(async () => {
     if (program) {
       getConfig(program)
         .then((data) => {
-          console.log(data);
+          setConfig(data);
         })
         .catch((error) => {
           console.error(error);
         });
     }
+  }, [program]);
+
+  useEffect(() => {
+    getConfigInfo();
   }, [program]);
 
   const handleClick = useCallback(
@@ -54,37 +60,52 @@ const Home: NextPage = () => {
         return;
       }
       setLoading(true);
+      let tx;
       if (fun == 'setup') {
-        const tx = await setup(provider, program).catch((error) => {
+        tx = await setup(provider, program).catch((error) => {
           console.log(error.logs);
           setLoading(false);
         });
-        console.log(tx);
-      } else if (fun == 'toggleFreezeProgram') {
-        const tx = await toggleFreezeProgram(provider, program).catch(
-          (error) => {
-            console.log(error.logs);
-            setLoading(false);
-          }
-        );
-        console.log(tx);
+      } else if (fun == 'toggleFreeze') {
+        tx = await toggleFreeze(provider, program).catch((error) => {
+          console.log(error.logs);
+          setLoading(false);
+        });
       }
+
+      if (tx) {
+        console.log(`tx: ${tx}`);
+        toast.success(
+          <div>
+            Tx:{' '}
+            <a
+              href={`https://solscan.io/tx/${tx}?cluster=devnet`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {formatTx(tx)}
+            </a>
+          </div>
+        );
+        await getConfigInfo();
+      }
+
       setLoading(false);
     },
-    [provider, program]
+    [getConfigInfo, provider, program]
   );
 
   return (
     <main>
       <ToastContainer />
       <section className="py-6 px-12 border-1 rounded-xl text-gray-900">
-        <p className="text-center mb-4">admin</p>
+        <h3 className="text-center mb-4 text-xl font-bold">admin operation</h3>
         <button
           className={`btn btn-active btn-primary normal-case mr-4 ${
             loading ? 'loading' : ''
           }`}
           onClick={() => handleClick('setup')}
-          disabled={loading}
+          disabled={loading || config?.owner}
         >
           setup
         </button>
@@ -92,11 +113,35 @@ const Home: NextPage = () => {
           className={`btn btn-active btn-primary normal-case ${
             loading ? 'loading' : ''
           }`}
-          onClick={() => handleClick('toggleFreezeProgram')}
+          onClick={() => handleClick('toggleFreeze')}
           disabled={loading}
         >
-          toggleFreezeProgram
+          toggleFreeze
         </button>
+      </section>
+      <section className="py-6 px-12 mt-4 border-1 rounded-xl text-gray-900">
+        <h3 className="text-center mb-4 text-xl font-bold">contract config</h3>
+        <div>
+          <p>owner: {config?.owner.toBase58()}</p>
+        </div>
+        <div>
+          <p>feeAccount: {config?.feeAccount.toBase58()}</p>
+        </div>
+        <div>
+          <p>feeRate: {config?.feeRate.toString()}</p>
+        </div>
+        <div>
+          <p>freeze: {config?.freeze.toString()}</p>
+        </div>
+        <div>
+          <p>orderId: {config?.orderId.toString()}</p>
+        </div>
+        <div>
+          <p>orderCount: {config?.orderCount.toString()}</p>
+        </div>
+        <div>
+          <p>bump: {config?.bump}</p>
+        </div>
       </section>
     </main>
   );

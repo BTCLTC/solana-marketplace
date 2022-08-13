@@ -53,7 +53,7 @@
       "accounts": [
         {
           "name": "owner",
-          "isMut": false,
+          "isMut": true,
           "isSigner": true
         },
         {
@@ -74,7 +74,7 @@
       "accounts": [
         {
           "name": "owner",
-          "isMut": false,
+          "isMut": true,
           "isSigner": true
         },
         {
@@ -95,7 +95,7 @@
       "accounts": [
         {
           "name": "owner",
-          "isMut": false,
+          "isMut": true,
           "isSigner": true
         },
         {
@@ -112,7 +112,7 @@
       "args": []
     },
     {
-      "name": "toggleFreezeProgram",
+      "name": "toggleFreeze",
       "accounts": [
         {
           "name": "owner",
@@ -121,7 +121,7 @@
         },
         {
           "name": "config",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         }
       ],
@@ -131,7 +131,7 @@
       "name": "sell",
       "accounts": [
         {
-          "name": "user",
+          "name": "seller",
           "isMut": true,
           "isSigner": true
         },
@@ -188,7 +188,7 @@
       "name": "updateSellPrice",
       "accounts": [
         {
-          "name": "user",
+          "name": "seller",
           "isMut": true,
           "isSigner": true
         },
@@ -235,7 +235,7 @@
       "name": "closeSell",
       "accounts": [
         {
-          "name": "user",
+          "name": "seller",
           "isMut": true,
           "isSigner": true
         },
@@ -376,7 +376,7 @@
             "type": "u64"
           },
           {
-            "name": "freezeProgram",
+            "name": "freeze",
             "type": "bool"
           },
           {
@@ -392,11 +392,11 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "id",
+            "name": "orderId",
             "type": "u64"
           },
           {
-            "name": "owner",
+            "name": "seller",
             "type": "publicKey"
           },
           {
@@ -417,6 +417,118 @@
           }
         ]
       }
+    }
+  ],
+  "events": [
+    {
+      "name": "BuyEvent",
+      "fields": [
+        {
+          "name": "orderId",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "buyer",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "seller",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "nftMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "nftVault",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "buyerNftVault",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "price",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "createdAt",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "CloseSellEvent",
+      "fields": [
+        {
+          "name": "orderId",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "seller",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "nftMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "nftVault",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "createdAt",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "SellEvent",
+      "fields": [
+        {
+          "name": "orderId",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "seller",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "nftMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "nftVault",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "price",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "createdAt",
+          "type": "u64",
+          "index": false
+        }
+      ]
     }
   ],
   "errors": [
@@ -480,8 +592,5 @@
       "name": "InvalidTokenAmount",
       "msg": "Invalid token amount"
     }
-  ],
-  "metadata": {
-    "address": "NFTMCFJD7ACCQr29CXeyqgMJe2HhdQJBDEMpSfTcqCk"
-  }
+  ]
 }

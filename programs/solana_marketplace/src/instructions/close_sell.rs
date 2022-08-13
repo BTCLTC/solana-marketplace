@@ -3,7 +3,7 @@ use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use solana_program::sysvar::rent;
 
 use crate::{
-    constants::{CONFIG_PDA_SEED, NFT_VAULT_PDA_SEED, SELL_PDA_SEED},
+    constants::{NFT_VAULT_PDA_SEED, SELL_PDA_SEED, CONFIG_PDA_SEED},
     states::{Config, Sell},
 };
 
@@ -118,15 +118,13 @@ pub fn close_sell_handler(ctx: Context<CloseSell>) -> Result<()> {
 
     let now_ts = Clock::get().unwrap().unix_timestamp;
     // close event
-    emit!(
-        CloseSellEvent {
-            order_id: config.order_id,
-            seller: ctx.accounts.seller.key(),
-            nft_mint: ctx.accounts.nft_mint.key(),
-            nft_vault: ctx.accounts.nft_vault.key(),
-            created_at: now_ts as u64,
-        }
-    );
+    emit!(CloseSellEvent {
+        order_id: config.order_id,
+        seller: ctx.accounts.seller.key(),
+        nft_mint: ctx.accounts.nft_mint.key(),
+        nft_vault: ctx.accounts.nft_vault.key(),
+        created_at: now_ts as u64,
+    });
 
     Ok(())
 }

@@ -1,16 +1,16 @@
 use anchor_lang::prelude::*;
 
-use crate::{constants::CONFIG_PDA_SEED, errors::ErrorCode, states::Config};
+use crate::{errors::ErrorCode, states::Config, constants::CONFIG_PDA_SEED};
 
 #[derive(Accounts)]
 pub struct UpdateFeeRate<'info> {
-    #[account(address = config.load()?.owner)]
+    #[account(mut)]
     pub owner: Signer<'info>,
 
     #[account(
         mut,
         seeds = [CONFIG_PDA_SEED.as_ref()],
-        bump,
+        bump = config.load()?.bump,
         has_one=owner
     )]
     pub config: AccountLoader<'info, Config>,

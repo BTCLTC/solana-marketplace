@@ -1,22 +1,22 @@
 use anchor_lang::prelude::*;
 
-use crate::{constants::CONFIG_PDA_SEED, states::Config};
+use crate::{states::Config, constants::CONFIG_PDA_SEED};
 
 #[derive(Accounts)]
 pub struct ProgramFreeze<'info> {
-    #[account(address = config.load()?.owner)]
     pub owner: Signer<'info>,
 
     #[account(
+        mut,
         seeds = [CONFIG_PDA_SEED.as_ref()],
-        bump,
+        bump = config.load()?.bump,
         has_one=owner
     )]
     pub config: AccountLoader<'info, Config>,
 }
 
-pub fn toggle_feeze_program_handler(ctx: Context<ProgramFreeze>) -> Result<()> {
+pub fn toggle_freeze_handler(ctx: Context<ProgramFreeze>) -> Result<()> {
     let mut config = ctx.accounts.config.load_mut()?;
-    config.freeze_program = !config.freeze_program;
+    config.freeze = !config.freeze;
     Ok(())
 }

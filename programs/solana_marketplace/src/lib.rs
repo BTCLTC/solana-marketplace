@@ -32,8 +32,8 @@ pub mod solana_marketplace {
         update_owner_handler(ctx)
     }
 
-    pub fn toggle_freeze_program(ctx: Context<ProgramFreeze>) -> Result<()> {
-        toggle_feeze_program_handler(ctx)
+    pub fn toggle_freeze(ctx: Context<ProgramFreeze>) -> Result<()> {
+        toggle_freeze_handler(ctx)
     }
 
     #[access_control(start_sell_available(&ctx.accounts))]

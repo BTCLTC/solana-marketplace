@@ -53,7 +53,7 @@ export type SolanaMarketplace = {
       accounts: [
         {
           name: 'owner';
-          isMut: false;
+          isMut: true;
           isSigner: true;
         },
         {
@@ -74,7 +74,7 @@ export type SolanaMarketplace = {
       accounts: [
         {
           name: 'owner';
-          isMut: false;
+          isMut: true;
           isSigner: true;
         },
         {
@@ -95,7 +95,7 @@ export type SolanaMarketplace = {
       accounts: [
         {
           name: 'owner';
-          isMut: false;
+          isMut: true;
           isSigner: true;
         },
         {
@@ -112,7 +112,7 @@ export type SolanaMarketplace = {
       args: [];
     },
     {
-      name: 'toggleFreezeProgram';
+      name: 'toggleFreeze';
       accounts: [
         {
           name: 'owner';
@@ -121,7 +121,7 @@ export type SolanaMarketplace = {
         },
         {
           name: 'config';
-          isMut: false;
+          isMut: true;
           isSigner: false;
         }
       ];
@@ -131,7 +131,7 @@ export type SolanaMarketplace = {
       name: 'sell';
       accounts: [
         {
-          name: 'user';
+          name: 'seller';
           isMut: true;
           isSigner: true;
         },
@@ -188,7 +188,7 @@ export type SolanaMarketplace = {
       name: 'updateSellPrice';
       accounts: [
         {
-          name: 'user';
+          name: 'seller';
           isMut: true;
           isSigner: true;
         },
@@ -235,7 +235,7 @@ export type SolanaMarketplace = {
       name: 'closeSell';
       accounts: [
         {
-          name: 'user';
+          name: 'seller';
           isMut: true;
           isSigner: true;
         },
@@ -376,7 +376,7 @@ export type SolanaMarketplace = {
             type: 'u64';
           },
           {
-            name: 'freezeProgram';
+            name: 'freeze';
             type: 'bool';
           },
           {
@@ -392,11 +392,11 @@ export type SolanaMarketplace = {
         kind: 'struct';
         fields: [
           {
-            name: 'id';
+            name: 'orderId';
             type: 'u64';
           },
           {
-            name: 'owner';
+            name: 'seller';
             type: 'publicKey';
           },
           {
@@ -417,6 +417,118 @@ export type SolanaMarketplace = {
           }
         ];
       };
+    }
+  ];
+  events: [
+    {
+      name: 'BuyEvent';
+      fields: [
+        {
+          name: 'orderId';
+          type: 'u64';
+          index: false;
+        },
+        {
+          name: 'buyer';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'seller';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'nftMint';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'nftVault';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'buyerNftVault';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'price';
+          type: 'u64';
+          index: false;
+        },
+        {
+          name: 'createdAt';
+          type: 'u64';
+          index: false;
+        }
+      ];
+    },
+    {
+      name: 'CloseSellEvent';
+      fields: [
+        {
+          name: 'orderId';
+          type: 'u64';
+          index: false;
+        },
+        {
+          name: 'seller';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'nftMint';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'nftVault';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'createdAt';
+          type: 'u64';
+          index: false;
+        }
+      ];
+    },
+    {
+      name: 'SellEvent';
+      fields: [
+        {
+          name: 'orderId';
+          type: 'u64';
+          index: false;
+        },
+        {
+          name: 'seller';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'nftMint';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'nftVault';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'price';
+          type: 'u64';
+          index: false;
+        },
+        {
+          name: 'createdAt';
+          type: 'u64';
+          index: false;
+        }
+      ];
     }
   ];
   errors: [
@@ -538,7 +650,7 @@ export const IDL: SolanaMarketplace = {
       accounts: [
         {
           name: 'owner',
-          isMut: false,
+          isMut: true,
           isSigner: true,
         },
         {
@@ -559,7 +671,7 @@ export const IDL: SolanaMarketplace = {
       accounts: [
         {
           name: 'owner',
-          isMut: false,
+          isMut: true,
           isSigner: true,
         },
         {
@@ -580,7 +692,7 @@ export const IDL: SolanaMarketplace = {
       accounts: [
         {
           name: 'owner',
-          isMut: false,
+          isMut: true,
           isSigner: true,
         },
         {
@@ -597,7 +709,7 @@ export const IDL: SolanaMarketplace = {
       args: [],
     },
     {
-      name: 'toggleFreezeProgram',
+      name: 'toggleFreeze',
       accounts: [
         {
           name: 'owner',
@@ -606,7 +718,7 @@ export const IDL: SolanaMarketplace = {
         },
         {
           name: 'config',
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
       ],
@@ -616,7 +728,7 @@ export const IDL: SolanaMarketplace = {
       name: 'sell',
       accounts: [
         {
-          name: 'user',
+          name: 'seller',
           isMut: true,
           isSigner: true,
         },
@@ -673,7 +785,7 @@ export const IDL: SolanaMarketplace = {
       name: 'updateSellPrice',
       accounts: [
         {
-          name: 'user',
+          name: 'seller',
           isMut: true,
           isSigner: true,
         },
@@ -720,7 +832,7 @@ export const IDL: SolanaMarketplace = {
       name: 'closeSell',
       accounts: [
         {
-          name: 'user',
+          name: 'seller',
           isMut: true,
           isSigner: true,
         },
@@ -861,7 +973,7 @@ export const IDL: SolanaMarketplace = {
             type: 'u64',
           },
           {
-            name: 'freezeProgram',
+            name: 'freeze',
             type: 'bool',
           },
           {
@@ -877,11 +989,11 @@ export const IDL: SolanaMarketplace = {
         kind: 'struct',
         fields: [
           {
-            name: 'id',
+            name: 'orderId',
             type: 'u64',
           },
           {
-            name: 'owner',
+            name: 'seller',
             type: 'publicKey',
           },
           {
@@ -902,6 +1014,118 @@ export const IDL: SolanaMarketplace = {
           },
         ],
       },
+    },
+  ],
+  events: [
+    {
+      name: 'BuyEvent',
+      fields: [
+        {
+          name: 'orderId',
+          type: 'u64',
+          index: false,
+        },
+        {
+          name: 'buyer',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'seller',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'nftMint',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'nftVault',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'buyerNftVault',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'price',
+          type: 'u64',
+          index: false,
+        },
+        {
+          name: 'createdAt',
+          type: 'u64',
+          index: false,
+        },
+      ],
+    },
+    {
+      name: 'CloseSellEvent',
+      fields: [
+        {
+          name: 'orderId',
+          type: 'u64',
+          index: false,
+        },
+        {
+          name: 'seller',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'nftMint',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'nftVault',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'createdAt',
+          type: 'u64',
+          index: false,
+        },
+      ],
+    },
+    {
+      name: 'SellEvent',
+      fields: [
+        {
+          name: 'orderId',
+          type: 'u64',
+          index: false,
+        },
+        {
+          name: 'seller',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'nftMint',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'nftVault',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'price',
+          type: 'u64',
+          index: false,
+        },
+        {
+          name: 'createdAt',
+          type: 'u64',
+          index: false,
+        },
+      ],
     },
   ],
   errors: [
