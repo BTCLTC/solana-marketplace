@@ -116,7 +116,7 @@ export type SolanaMarketplace = {
       accounts: [
         {
           name: 'owner';
-          isMut: false;
+          isMut: true;
           isSigner: true;
         },
         {
@@ -413,6 +413,10 @@ export type SolanaMarketplace = {
           },
           {
             name: 'createdAt';
+            type: 'u64';
+          },
+          {
+            name: 'updatedAt';
             type: 'u64';
           }
         ];
@@ -713,7 +717,7 @@ export const IDL: SolanaMarketplace = {
       accounts: [
         {
           name: 'owner',
-          isMut: false,
+          isMut: true,
           isSigner: true,
         },
         {
@@ -1010,6 +1014,10 @@ export const IDL: SolanaMarketplace = {
           },
           {
             name: 'createdAt',
+            type: 'u64',
+          },
+          {
+            name: 'updatedAt',
             type: 'u64',
           },
         ],

@@ -1,6 +1,6 @@
 import { AnchorProvider, Program } from '@project-serum/anchor';
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 import {
   findConfigAddress,
@@ -11,7 +11,6 @@ import { SolanaMarketplace } from '../types/solana_marketplace';
 
 export const closeSell = async (
   nftMint: string,
-  userNftVault: string,
   provider: AnchorProvider,
   program: Program<SolanaMarketplace>
 ) => {
@@ -23,6 +22,10 @@ export const closeSell = async (
     provider.wallet.publicKey,
     new PublicKey(nftMint)
   );
+  const userNftVault = await getAssociatedTokenAddress(
+    new PublicKey(nftMint),
+    provider.wallet.publicKey
+  );
 
   return await program.methods
     .closeSell()
@@ -31,7 +34,7 @@ export const closeSell = async (
       config,
       nftMint: new PublicKey(nftMint),
       nftVault,
-      userNftVault: new PublicKey(userNftVault),
+      userNftVault: userNftVault,
       sell,
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,

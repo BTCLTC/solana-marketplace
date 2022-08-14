@@ -1,6 +1,6 @@
 import { AnchorProvider, Program } from '@project-serum/anchor';
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 import {
   findConfigAddress,
@@ -13,7 +13,6 @@ import { feeAccountPublicKey } from '../utils/constant';
 export const buy = async (
   seller: string,
   nftMint: string,
-  buyerNftVault: string,
   provider: AnchorProvider,
   program: Program<SolanaMarketplace>
 ) => {
@@ -24,6 +23,11 @@ export const buy = async (
   const [sell, _sellBump] = await findSellAddress(
     provider.wallet.publicKey,
     new PublicKey(nftMint)
+  );
+
+  const buyerNftVault = await getAssociatedTokenAddress(
+    new PublicKey(nftMint),
+    provider.wallet.publicKey
   );
 
   const feeAccountValue = localStorage.getItem('fee_account');
@@ -39,7 +43,7 @@ export const buy = async (
       config,
       nftMint: new PublicKey(nftMint),
       nftVault,
-      buyerNftVault: new PublicKey(buyerNftVault),
+      buyerNftVault: buyerNftVault,
       feeAccount,
       sell,
       systemProgram: SystemProgram.programId,

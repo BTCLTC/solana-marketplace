@@ -48,6 +48,7 @@ const Home: NextPage = () => {
       getConfig(program)
         .then((data) => {
           setConfig(data);
+          localStorage.setItem('fee_account', data.feeAccount.toBase58());
         })
         .catch((error) => {
           console.error(error);

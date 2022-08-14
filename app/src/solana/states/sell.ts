@@ -3,14 +3,14 @@ import { PublicKey } from '@solana/web3.js';
 
 import { findSellAddress } from '../utils/accounts';
 import { SolanaMarketplace } from '../types/solana_marketplace';
-import { feeAccountPublicKey } from '../utils/constant';
 
 export const getSell = async (
+  seller: string,
   mint: string,
   program: Program<SolanaMarketplace>
 ) => {
   const [sell, _bump] = await findSellAddress(
-    feeAccountPublicKey,
+    new PublicKey(seller),
     new PublicKey(mint)
   );
   return await program.account.sell.fetch(sell);

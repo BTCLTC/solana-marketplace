@@ -4,9 +4,10 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 import { findConfigAddress, findSellAddress } from '../utils/accounts';
 import { SolanaMarketplace } from '../types/solana_marketplace';
+import { SOL_DECIMALS } from '../utils/constant';
 
 export const updateSellPrice = async (
-  price: string,
+  priceStr: string,
   nftMint: string,
   provider: AnchorProvider,
   program: Program<SolanaMarketplace>
@@ -16,6 +17,9 @@ export const updateSellPrice = async (
     provider.wallet.publicKey,
     new PublicKey(nftMint)
   );
+
+  const decimals = 10 ** SOL_DECIMALS;
+  const price = new BN(Number(priceStr) * decimals);
 
   return await program.methods
     .updateSellPrice(new BN(price))

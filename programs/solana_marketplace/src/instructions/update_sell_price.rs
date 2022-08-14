@@ -52,8 +52,10 @@ pub struct UpdateSell<'info> {
 pub fn update_sell_price_handler(ctx: Context<UpdateSell>, price: u64) -> Result<()> {
     require!(price > 0, ErrorCode::InvalidTokenAmount);
 
+    let now_ts = Clock::get().unwrap().unix_timestamp;
     let mut sell = ctx.accounts.sell.load_mut()?;
     sell.price = price;
+    sell.updated_at = now_ts as u64;
 
     Ok(())
 }

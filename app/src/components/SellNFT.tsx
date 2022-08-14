@@ -36,11 +36,13 @@ const SellNFT = ({ info }: Props) => {
       return;
     }
     setLoading(true);
-    const tx = await sell(price, info.mint, provider, program).catch((error: any) => {
-      console.log(error);
-      console.log(error.logs);
-      setLoading(false);
-    });
+    const tx = await sell(price, info.mint, provider, program).catch(
+      (error: any) => {
+        console.log(error);
+        console.log(error.logs);
+        setLoading(false);
+      }
+    );
     setLoading(false);
     if (tx) {
       console.log(`tx: ${tx}`);

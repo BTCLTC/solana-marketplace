@@ -116,7 +116,7 @@
       "accounts": [
         {
           "name": "owner",
-          "isMut": false,
+          "isMut": true,
           "isSigner": true
         },
         {
@@ -413,6 +413,10 @@
           },
           {
             "name": "createdAt",
+            "type": "u64"
+          },
+          {
+            "name": "updatedAt",
             "type": "u64"
           }
         ]

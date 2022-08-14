@@ -108,6 +108,7 @@ pub fn sell_handle(ctx: Context<StartSell>, price: u64) -> Result<()> {
     sell.nft_vault = ctx.accounts.nft_vault.key();
     sell.price = price;
     sell.created_at = now_ts as u64;
+    sell.updated_at = now_ts as u64;
 
     // Update config
     config.order_count += 1;
