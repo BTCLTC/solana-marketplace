@@ -13,6 +13,8 @@ export const DEVNET = clusterApiUrl('devnet');
 
 export const PROGRAM_ID = new PublicKey(programId);
 
+export const SOL_DECIMALS = 9;
+
 export const connectionURL =
   process.env.NEXT_PUBLIC_NETWORK == 'devnet' ? DEVNET : LOCALHOST;
 

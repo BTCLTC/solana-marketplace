@@ -1,6 +1,7 @@
 import { AnchorProvider, BN, Program } from '@project-serum/anchor';
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { getParsedAccountByMint } from '@nfteyez/sol-rayz';
 
 import {
   findConfigAddress,
@@ -8,11 +9,11 @@ import {
   findVaultAddress,
 } from '../utils/accounts';
 import { SolanaMarketplace } from '../types/solana_marketplace';
+import { SOL_DECIMALS } from '../utils/constant';
 
 export const sell = async (
-  price: string,
+  priceStr: string,
   nftMint: string,
-  userNftVault: string,
   provider: AnchorProvider,
   program: Program<SolanaMarketplace>
 ) => {
@@ -24,15 +25,22 @@ export const sell = async (
     provider.wallet.publicKey,
     new PublicKey(nftMint)
   );
+  const userNftVault = await getParsedAccountByMint({
+    mintAddress: nftMint,
+    connection: provider.connection,
+  });
+
+  const decimals = 10 ** SOL_DECIMALS;
+  const price = new BN(Number(priceStr) * decimals);
 
   return await program.methods
-    .sell(new BN(price).mul(new BN(10).pow(new BN(9))))
+    .sell(price)
     .accounts({
       seller: provider.wallet.publicKey,
       config,
       nftMint: new PublicKey(nftMint),
       nftVault,
-      userNftVault: new PublicKey(userNftVault),
+      userNftVault: userNftVault.pubkey,
       sell: sellAddress,
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,

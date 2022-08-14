@@ -23,7 +23,6 @@ const SellNFT = ({ info }: Props) => {
   const [price, setPrice] = useState('');
 
   useMount(() => {
-    console.log(10 ** 9)
     axios.get(info.data.uri).then((res) => {
       if (res?.data?.image) {
         setSrcUrl(res.data.image);
@@ -32,11 +31,19 @@ const SellNFT = ({ info }: Props) => {
   });
 
   const handleSell = useCallback(async () => {
+    if (!provider || !program) {
+      toast.error('请先连接钱包，并切换到devnet网络');
+      return;
+    }
     setLoading(true);
-    try {
-      const tx = await sell(price, info.mint);
-      console.log(`tx: ${tx}`);
+    const tx = await sell(price, info.mint, provider, program).catch((error: any) => {
+      console.log(error);
+      console.log(error.logs);
       setLoading(false);
+    });
+    setLoading(false);
+    if (tx) {
+      console.log(`tx: ${tx}`);
       toast.success(
         <div className="text-sm">
           Tx:{' '}
@@ -50,11 +57,8 @@ const SellNFT = ({ info }: Props) => {
           </a>
         </div>
       );
-    } catch (error: any) {
-      console.log(error.logs);
-      setLoading(false);
     }
-  }, [info.mint, price]);
+  }, [info.mint, price, program, provider]);
 
   return (
     <div className="card card-compact w-96 bg-base-100 shadow-xl my-6">
