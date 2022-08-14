@@ -1,6 +1,6 @@
 import type { AppProps } from 'next/app';
 import { useMemo } from 'react';
-
+import { RecoilRoot } from 'recoil'
 import {
   ConnectionProvider,
   WalletProvider,
@@ -43,13 +43,15 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </WalletProvider>
-    </ConnectionProvider>
+    <RecoilRoot>
+      <ConnectionProvider endpoint={endpoint}>
+        <WalletProvider wallets={wallets} autoConnect>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </WalletProvider>
+      </ConnectionProvider>
+    </RecoilRoot>
   );
 }
 

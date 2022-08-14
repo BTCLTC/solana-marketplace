@@ -1,13 +1,9 @@
 import type { NextPage } from 'next';
 import { useEffect, useMemo, useCallback, useState } from 'react';
-import { AnchorProvider, BN, Program } from '@project-serum/anchor';
-import { Connection } from '@solana/web3.js';
-import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { toast } from 'react-toastify';
+import { useRecoilValue } from 'recoil';
+import { m } from 'framer-motion';
 
-import { SolanaMarketplace } from '../solana/types/solana_marketplace';
-import idl from '../solana/idl/solana_marketplace.json';
-import { programId, connectionURL } from '../solana/utils';
 import { getConfig } from '../solana/states';
 import {
   setup,
@@ -16,33 +12,15 @@ import {
   updateFeeRate,
   updateOwner,
 } from '../solana/instructions';
-import { formatTx } from '../utils';
+import { fade, formatTx } from '../utils';
+import { appState } from '../stores';
 
 const Home: NextPage = () => {
+  const { provider, program } = useRecoilValue(appState);
+
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState<any>(null);
-
-  const wallet = useAnchorWallet();
-
-  const provider = useMemo(() => {
-    if (wallet) {
-      const connection = new Connection(connectionURL);
-      return new AnchorProvider(connection, wallet, {});
-    }
-    return undefined;
-  }, [wallet]);
-
-  const program = useMemo(() => {
-    if (provider) {
-      return new Program<SolanaMarketplace>(
-        idl as unknown as SolanaMarketplace,
-        programId,
-        provider
-      );
-    }
-    return null;
-  }, [provider]);
 
   const isAddress = useMemo(() => {
     return input.length == 44;
@@ -140,7 +118,7 @@ const Home: NextPage = () => {
   );
 
   return (
-    <main className="container">
+    <m.main variants={fade} className="container">
       <section className="container flex items-center justify-between">
         <section className="flex-shrink-0 py-6 px-12 border-1 rounded-xl text-gray-900 w-[600px]">
           <h3 className="text-center mb-4 text-xl font-bold">
@@ -215,7 +193,9 @@ const Home: NextPage = () => {
             <p>feeAccount: {config?.feeAccount.toBase58()}</p>
           </div>
           <div>
-            <p>feeRate: {config?.feeRate.toString()} {rateValue}</p>
+            <p>
+              feeRate: {config?.feeRate.toString()} {rateValue}
+            </p>
           </div>
           <div>
             <p>freeze: {config?.freeze.toString()}</p>
@@ -231,7 +211,7 @@ const Home: NextPage = () => {
           </div>
         </section>
       </section>
-    </main>
+    </m.main>
   );
 };
 

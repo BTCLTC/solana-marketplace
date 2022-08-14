@@ -1,7 +1,7 @@
 {
-  "title": "title",
-  "titleTemplate": "%s | SubTitle",
-  "description": "xxxx",
+  "title": "BitKeep",
+  "titleTemplate": "%s | NFT marketplace",
+  "description": "BitKeep NFT marketplace",
   "favicon": "/favicon.ico",
   "additionalMetaTags": [
     {
