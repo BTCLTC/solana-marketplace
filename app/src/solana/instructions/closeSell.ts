@@ -27,7 +27,7 @@ export const closeSell = async (
   return await program.methods
     .closeSell()
     .accounts({
-      user: provider.wallet.publicKey,
+      seller: provider.wallet.publicKey,
       config,
       nftMint: new PublicKey(nftMint),
       nftVault,

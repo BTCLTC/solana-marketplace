@@ -28,7 +28,7 @@ export const sell = async (
   return await program.methods
     .sell(new BN(price))
     .accounts({
-      user: provider.wallet.publicKey,
+      seller: provider.wallet.publicKey,
       config,
       nftMint: new PublicKey(nftMint),
       nftVault,

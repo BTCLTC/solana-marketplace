@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { useEffect, useMemo, useCallback, useState } from 'react';
-import { AnchorProvider, Program } from '@project-serum/anchor';
+import { AnchorProvider, BN, Program } from '@project-serum/anchor';
 import { Connection } from '@solana/web3.js';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { toast } from 'react-toastify';
@@ -56,6 +56,14 @@ const Home: NextPage = () => {
       Number(input) <= 10000
     );
   }, [input]);
+
+  const rateValue = useMemo(() => {
+    if (config?.feeRate) {
+      const rate = config.feeRate.toNumber() / 100;
+      return `(${rate}%)`;
+    }
+    return '';
+  }, [config?.feeRate]);
 
   const getConfigInfo = useCallback(async () => {
     if (program) {
@@ -207,7 +215,7 @@ const Home: NextPage = () => {
             <p>feeAccount: {config?.feeAccount.toBase58()}</p>
           </div>
           <div>
-            <p>feeRate: {config?.feeRate.toString()}</p>
+            <p>feeRate: {config?.feeRate.toString()} {rateValue}</p>
           </div>
           <div>
             <p>freeze: {config?.freeze.toString()}</p>
