@@ -4,6 +4,7 @@ use crate::{states::Config, constants::CONFIG_PDA_SEED};
 
 #[derive(Accounts)]
 pub struct ProgramFreeze<'info> {
+    #[account(mut)]
     pub owner: Signer<'info>,
 
     #[account(
