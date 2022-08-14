@@ -17,4 +17,4 @@ export const fade = {
     opacity: 0,
     transition: { duration: 0.4, ease: [0.83, 0, 0.17, 1] },
   },
-}
+};

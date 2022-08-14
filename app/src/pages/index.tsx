@@ -67,31 +67,21 @@ const Home: NextPage = () => {
       }
       setLoading(true);
       let tx;
-      if (fun == 'setup') {
-        tx = await setup(provider, program).catch((error) => {
-          console.log(error.logs);
-          setLoading(false);
-        });
-      } else if (fun == 'toggleFreeze') {
-        tx = await toggleFreeze(provider, program).catch((error) => {
-          console.log(error.logs);
-          setLoading(false);
-        });
-      } else if (fun == 'updateOwner') {
-        tx = await updateOwner(input, provider, program).catch((error) => {
-          console.log(error.logs);
-          setLoading(false);
-        });
-      } else if (fun == 'updateFeeAccount') {
-        tx = await updateFeeAccount(input, provider, program).catch((error) => {
-          console.log(error.logs);
-          setLoading(false);
-        });
-      } else if (fun == 'updateFeeRate') {
-        tx = await updateFeeRate(input, provider, program).catch((error) => {
-          console.log(error.logs);
-          setLoading(false);
-        });
+      try {
+        if (fun == 'setup') {
+          tx = await setup(provider, program);
+        } else if (fun == 'toggleFreeze') {
+          tx = await toggleFreeze(provider, program);
+        } else if (fun == 'updateOwner') {
+          tx = await updateOwner(input, provider, program);
+        } else if (fun == 'updateFeeAccount') {
+          tx = await updateFeeAccount(input, provider, program);
+        } else if (fun == 'updateFeeRate') {
+          tx = await updateFeeRate(input, provider, program);
+        }
+      } catch (error: any) {
+        console.log(error.logs);
+        setLoading(false);
       }
 
       if (tx) {

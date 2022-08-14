@@ -1,6 +1,6 @@
 import type { AppProps } from 'next/app';
 import { useMemo } from 'react';
-import { RecoilRoot } from 'recoil'
+import { RecoilRoot } from 'recoil';
 import {
   ConnectionProvider,
   WalletProvider,

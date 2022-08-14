@@ -16,6 +16,12 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    loader: 'akamai',
+    path: '',
+    domains: ['*'],
+    formats: ['image/webp'],
+  },
 };
 
 module.exports = nextConfig;

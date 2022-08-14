@@ -26,7 +26,7 @@ export const sell = async (
   );
 
   return await program.methods
-    .sell(new BN(price))
+    .sell(new BN(price).mul(new BN(10).pow(new BN(9))))
     .accounts({
       seller: provider.wallet.publicKey,
       config,

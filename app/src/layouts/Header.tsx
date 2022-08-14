@@ -61,7 +61,7 @@ const Header: FC = () => {
   return (
     <header className="container mx-auto flex justify-between items-center">
       <h1 className="text-gray-700 font-bold flex-shrink-0">NFT Marketplace</h1>
-      <nav className="flex items-center justify-between w-[240px] text-blue-500">
+      <nav className="flex items-center justify-between w-[240px] text-gray-500">
         <Link href="/" activeClassName="text-blue-900 font-bold">
           <a>Home</a>
         </Link>
