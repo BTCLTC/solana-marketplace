@@ -67,7 +67,7 @@ pub struct CloseSell<'info> {
     )]
     pub sell: AccountLoader<'info, Sell>,
 
-    ///used by anchor for init of the token
+    /// used by anchor for init of the token
     #[account(address = system_program::ID)]
     pub system_program: Program<'info, System>,
 

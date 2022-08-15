@@ -22,4 +22,5 @@ export interface INFT {
   mint: string;
   primarySaleHappened: boolean;
   updateAuthority: string;
+  seller?: string;
 }

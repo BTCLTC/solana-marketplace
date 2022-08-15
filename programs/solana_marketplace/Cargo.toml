@@ -19,7 +19,7 @@ default = []
 overflow-checks = true
 
 [dependencies]
-anchor-lang = "0.25.0"
+anchor-lang = { version = "0.25.0", features = ["init-if-needed"] }
 anchor-spl = "0.25.0"
 solana-program = "1.10.34"
 spl-token = { version = "3.3.0", features = ["no-entrypoint"] }

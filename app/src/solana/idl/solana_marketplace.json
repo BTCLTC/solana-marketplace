@@ -318,7 +318,7 @@
         },
         {
           "name": "feeAccount",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -334,6 +334,11 @@
         },
         {
           "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
           "isMut": false,
           "isSigner": false
         },
@@ -596,8 +601,5 @@
       "name": "InvalidTokenAmount",
       "msg": "Invalid token amount"
     }
-  ],
-  "metadata": {
-    "address": "NFTMCFJD7ACCQr29CXeyqgMJe2HhdQJBDEMpSfTcqCk"
-  }
+  ]
 }

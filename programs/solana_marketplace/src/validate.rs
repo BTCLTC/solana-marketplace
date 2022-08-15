@@ -1,7 +1,7 @@
 use crate::{errors::ErrorCode, BuyNFT, CloseSell, SellNFT, UpdateSell};
 use anchor_lang::prelude::*;
 
-pub fn start_sell_available(accounts: &SellNFT) -> Result<()> {
+pub fn sell_nft_available(accounts: &SellNFT) -> Result<()> {
     let config = accounts.config.load()?;
 
     if config.freeze {

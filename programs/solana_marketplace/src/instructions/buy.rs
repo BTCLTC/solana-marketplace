@@ -1,9 +1,12 @@
 use anchor_lang::{prelude::*, system_program};
-use anchor_spl::token::{self, Mint, Token, TokenAccount};
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token::{self, Mint, Token, TokenAccount},
+};
 use solana_program::{program::invoke, system_instruction::transfer, sysvar::rent};
 
 use crate::{
-    constants::{NFT_VAULT_PDA_SEED, SELL_PDA_SEED, CONFIG_PDA_SEED},
+    constants::{CONFIG_PDA_SEED, NFT_VAULT_PDA_SEED, SELL_PDA_SEED},
     states::{Config, Sell},
 };
 
@@ -57,14 +60,15 @@ pub struct BuyNFT<'info> {
     pub nft_vault: Box<Account<'info, TokenAccount>>,
 
     #[account(
-        mut,
-        constraint = buyer_nft_vault.mint == nft_mint.key(),
-        constraint = buyer_nft_vault.owner == buyer.key()
+        init_if_needed,
+        payer = buyer,
+        associated_token::mint = nft_mint,
+        associated_token::authority = buyer
     )]
     pub buyer_nft_vault: Box<Account<'info, TokenAccount>>,
 
     /// CHECK: This is not dangerous because we don't read or write from this account
-    #[account(address = config.load()?.fee_account)]
+    #[account(mut)]
     pub fee_account: AccountInfo<'info>,
 
     #[account(
@@ -82,12 +86,15 @@ pub struct BuyNFT<'info> {
     )]
     pub sell: AccountLoader<'info, Sell>,
 
-    ///used by anchor for init of the token
+    /// used by anchor for init of the token
     #[account(address = system_program::ID)]
     pub system_program: Program<'info, System>,
 
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
+
+    #[account(address = spl_associated_token_account::ID)]
+    pub associated_token_program: Program<'info, AssociatedToken>,
 
     #[account(address = rent::ID)]
     pub rent: Sysvar<'info, Rent>,
@@ -118,11 +125,7 @@ pub fn buy_nft_handler(ctx: Context<BuyNFT>) -> Result<()> {
 
     // send lamports to seller
     invoke(
-        &transfer(
-            ctx.accounts.buyer.to_account_info().key,
-            ctx.accounts.sell.to_account_info().key,
-            price,
-        ),
+        &transfer(&ctx.accounts.buyer.key(), &ctx.accounts.seller.key(), price),
         &[
             ctx.accounts.buyer.to_account_info(),
             ctx.accounts.seller.to_account_info(),
@@ -134,8 +137,8 @@ pub fn buy_nft_handler(ctx: Context<BuyNFT>) -> Result<()> {
         // send lamports to fee_vault
         invoke(
             &transfer(
-                ctx.accounts.buyer.to_account_info().key,
-                ctx.accounts.fee_account.to_account_info().key,
+                &ctx.accounts.buyer.key(),
+                &ctx.accounts.fee_account.key(),
                 fee,
             ),
             &[

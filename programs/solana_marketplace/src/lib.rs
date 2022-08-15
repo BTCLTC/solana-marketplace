@@ -2,7 +2,6 @@ pub mod constants;
 pub mod errors;
 pub mod instructions;
 pub mod states;
-pub mod utils;
 pub mod validate;
 
 use crate::instructions::*;
@@ -36,7 +35,7 @@ pub mod solana_marketplace {
         toggle_freeze_handler(ctx)
     }
 
-    #[access_control(start_sell_available(&ctx.accounts))]
+    #[access_control(sell_nft_available(&ctx.accounts))]
     pub fn sell_nft(ctx: Context<SellNFT>, price: u64) -> Result<()> {
         sell_nft_handle(ctx, price)
     }

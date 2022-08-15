@@ -1,14 +1,16 @@
 import Image from 'next/image';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useMount } from 'ahooks';
 import { useRecoilValue } from 'recoil';
 
+import { SOL_DECIMALS } from '../solana/utils/constant';
 import { appState } from '../stores';
-import { sell } from '../solana/instructions';
+import { buy } from '../solana/instructions';
 import { INFT } from '../interface';
 import { formatTx } from '../utils';
+import { getSell } from '../solana/states/sell';
 import placeholder from '../images/placeholder.jpg';
 
 type Props = {
@@ -21,6 +23,8 @@ const BuyNFT = ({ info }: Props) => {
   const [loading, setLoading] = useState(false);
   const [srcUrl, setSrcUrl] = useState(placeholder);
   const [price, setPrice] = useState('');
+  const [infos, setInfos] = useState<any>({});
+  const [isSold, setSold] = useState(false);
 
   useMount(() => {
     axios.get(info.data.uri).then((res) => {
@@ -30,13 +34,36 @@ const BuyNFT = ({ info }: Props) => {
     });
   });
 
-  const handleSell = useCallback(async () => {
+  useEffect(() => {
+    if (program) {
+      getSell(info.seller || '', info.mint, program)
+        .then((res) => {
+          setInfos(res);
+        })
+        .catch((error) => {
+          setSold(true);
+          console.error(error);
+        });
+    }
+  }, [program]);
+
+  const isSelf = useMemo(() => {
+    const pubKey = provider?.wallet.publicKey.toBase58();
+    return pubKey === info.seller;
+  }, [provider, info]);
+
+  const getSellPrice = useMemo(() => {
+    const decimals = 10 ** SOL_DECIMALS;
+    return infos.price ? infos.price.toString() / decimals : 0;
+  }, [infos]);
+
+  const handleBuy = useCallback(async () => {
     if (!provider || !program) {
       toast.error('请先连接钱包，并切换到devnet网络');
       return;
     }
     setLoading(true);
-    const tx = await sell(price, info.mint, provider, program).catch(
+    const tx = await buy(info.seller!, info.mint, provider, program).catch(
       (error: any) => {
         console.log(error);
         console.log(error.logs);
@@ -60,7 +87,52 @@ const BuyNFT = ({ info }: Props) => {
         </div>
       );
     }
-  }, [info.mint, price, program, provider]);
+  }, [info.mint, program, provider, info.seller]);
+
+  const renderInfo = useMemo(() => {
+    if (isSold) {
+      return (
+        <div className="w-full bg-gray-500 mt-3 p-2 rounded-lg flex text-white items-center justify-center">
+          Already Sold
+        </div>
+      );
+    }
+    if (isSelf) {
+      return (
+        <>
+          <button
+            className={`btn btn-active btn-error text-white ${
+              loading ? 'loading' : ''
+            }`}
+            disabled={loading}
+            onClick={() => handleBuy()}
+          >
+            Cancel
+          </button>
+          <button
+            className={`btn btn-active btn-error text-white ${
+              loading ? 'loading' : ''
+            }`}
+            disabled={loading}
+            onClick={() => handleBuy()}
+          >
+            Edit
+          </button>
+        </>
+      );
+    }
+    return (
+      <button
+        className={`btn btn-active btn-error text-white ${
+          loading ? 'loading' : ''
+        }`}
+        disabled={loading}
+        onClick={() => handleBuy()}
+      >
+        buy
+      </button>
+    );
+  }, [isSold, isSelf, loading, handleBuy]);
 
   return (
     <div className="card card-compact w-96 bg-base-100 shadow-xl my-6">
@@ -72,7 +144,7 @@ const BuyNFT = ({ info }: Props) => {
           {info.data.name}
           <div className="badge badge-secondary">{info.data.symbol}</div>
         </h2>
-        <p>
+        <div>
           mint:{' '}
           <a
             className="text-xs text-blue-500 cursor-pointer"
@@ -82,26 +154,19 @@ const BuyNFT = ({ info }: Props) => {
           >
             {info.mint}
           </a>
-        </p>
+        </div>
         <div>
-          <input
-            type="text"
-            placeholder="Input SOL amount"
-            className="input input-bordered input-info w-full my-4"
-            onChange={(e) => setPrice(e.target.value)}
-          />
+          <p>price: {getSellPrice} SOL</p>
+          {!isSold && isSelf && (
+            <input
+              type="text"
+              placeholder="Input SOL amount"
+              className="input input-bordered input-info w-full my-4"
+              onChange={(e) => setPrice(e.target.value)}
+            />
+          )}
         </div>
-        <div className="card-actions justify-center">
-          <button
-            className={`btn btn-active btn-error text-white ${
-              loading ? 'loading' : ''
-            }`}
-            disabled={loading || !price}
-            onClick={() => handleSell()}
-          >
-            Sell
-          </button>
-        </div>
+        <div className="card-actions justify-center">{renderInfo}</div>
       </div>
     </div>
   );

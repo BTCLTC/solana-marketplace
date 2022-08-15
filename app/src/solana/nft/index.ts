@@ -14,12 +14,14 @@ export const loadAllNFTs = async (provider: AnchorProvider) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
-export const loadMarketNfts =async () => {
+export const loadMarketNfts = async () => {
   let marketNFTs = [];
-  for(let item of marketNfts) {
-    const res = await axios.get(`https://api.solscan.io/account?address=${item.mint}&cluster=devnet`);
+  for (let item of marketNfts) {
+    const res = await axios.get(
+      `https://api.solscan.io/account?address=${item.mint}&cluster=devnet`
+    );
     marketNFTs.push({
       ...res?.data?.data?.metadata,
       seller: item.seller,
@@ -27,4 +29,4 @@ export const loadMarketNfts =async () => {
   }
   console.log('marketNFTs', marketNFTs);
   return marketNFTs;
-}
+};

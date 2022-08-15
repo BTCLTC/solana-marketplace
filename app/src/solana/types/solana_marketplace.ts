@@ -318,7 +318,7 @@ export type SolanaMarketplace = {
         },
         {
           name: 'feeAccount';
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -334,6 +334,11 @@ export type SolanaMarketplace = {
         },
         {
           name: 'tokenProgram';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'associatedTokenProgram';
           isMut: false;
           isSigner: false;
         },
@@ -919,7 +924,7 @@ export const IDL: SolanaMarketplace = {
         },
         {
           name: 'feeAccount',
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
@@ -935,6 +940,11 @@ export const IDL: SolanaMarketplace = {
         },
         {
           name: 'tokenProgram',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'associatedTokenProgram',
           isMut: false,
           isSigner: false,
         },

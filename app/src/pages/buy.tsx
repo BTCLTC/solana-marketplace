@@ -9,7 +9,6 @@ import { fade } from '../utils';
 import { loadMarketNfts } from '../solana/nft';
 import { INFT } from '../interface';
 
-
 const Sell: NextPage = () => {
   const { provider } = useRecoilValue(appState);
 
