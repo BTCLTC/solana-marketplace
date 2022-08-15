@@ -20,7 +20,10 @@ export const loadMarketNfts =async () => {
   let marketNFTs = [];
   for(let item of marketNfts) {
     const res = await axios.get(`https://api.solscan.io/account?address=${item.mint}&cluster=devnet`);
-    marketNFTs.push(res?.data?.data?.metadata);
+    marketNFTs.push({
+      ...res?.data?.data?.metadata,
+      seller: item.seller,
+    });
   }
   console.log('marketNFTs', marketNFTs);
   return marketNFTs;
