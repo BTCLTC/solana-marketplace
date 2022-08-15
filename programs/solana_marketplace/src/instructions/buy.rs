@@ -20,7 +20,7 @@ pub struct BuyEvent {
 }
 
 #[derive(Accounts)]
-pub struct Buy<'info> {
+pub struct BuyNFT<'info> {
     #[account(mut)]
     pub buyer: Signer<'info>,
 
@@ -93,7 +93,7 @@ pub struct Buy<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-pub fn buy_handler(ctx: Context<Buy>) -> Result<()> {
+pub fn buy_nft_handler(ctx: Context<BuyNFT>) -> Result<()> {
     let mut config = ctx.accounts.config.load_mut()?;
     let sell = &mut ctx.accounts.sell.load()?;
 

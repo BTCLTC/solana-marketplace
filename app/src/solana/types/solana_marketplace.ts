@@ -128,7 +128,7 @@ export type SolanaMarketplace = {
       args: [];
     },
     {
-      name: 'sell';
+      name: 'sellNft';
       accounts: [
         {
           name: 'seller';
@@ -284,7 +284,7 @@ export type SolanaMarketplace = {
       args: [];
     },
     {
-      name: 'buy';
+      name: 'buyNft';
       accounts: [
         {
           name: 'buyer';
@@ -729,7 +729,7 @@ export const IDL: SolanaMarketplace = {
       args: [],
     },
     {
-      name: 'sell',
+      name: 'sellNft',
       accounts: [
         {
           name: 'seller',
@@ -885,7 +885,7 @@ export const IDL: SolanaMarketplace = {
       args: [],
     },
     {
-      name: 'buy',
+      name: 'buyNft',
       accounts: [
         {
           name: 'buyer',

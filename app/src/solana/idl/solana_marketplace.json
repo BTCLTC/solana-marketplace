@@ -128,7 +128,7 @@
       "args": []
     },
     {
-      "name": "sell",
+      "name": "sellNft",
       "accounts": [
         {
           "name": "seller",
@@ -284,7 +284,7 @@
       "args": []
     },
     {
-      "name": "buy",
+      "name": "buyNft",
       "accounts": [
         {
           "name": "buyer",
@@ -596,5 +596,8 @@
       "name": "InvalidTokenAmount",
       "msg": "Invalid token amount"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "NFTMCFJD7ACCQr29CXeyqgMJe2HhdQJBDEMpSfTcqCk"
+  }
 }

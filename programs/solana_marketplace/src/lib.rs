@@ -37,8 +37,8 @@ pub mod solana_marketplace {
     }
 
     #[access_control(start_sell_available(&ctx.accounts))]
-    pub fn sell(ctx: Context<StartSell>, price: u64) -> Result<()> {
-        sell_handle(ctx, price)
+    pub fn sell_nft(ctx: Context<SellNFT>, price: u64) -> Result<()> {
+        sell_nft_handle(ctx, price)
     }
 
     #[access_control(update_sell_available(&ctx.accounts))]
@@ -52,7 +52,7 @@ pub mod solana_marketplace {
     }
 
     #[access_control(buy_available(&ctx.accounts))]
-    pub fn buy(ctx: Context<Buy>) -> Result<()> {
-        buy_handler(ctx)
+    pub fn buy_nft(ctx: Context<BuyNFT>) -> Result<()> {
+        buy_nft_handler(ctx)
     }
 }

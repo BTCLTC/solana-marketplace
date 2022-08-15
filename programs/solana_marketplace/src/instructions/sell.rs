@@ -19,7 +19,7 @@ pub struct SellEvent {
 }
 
 #[derive(Accounts)]
-pub struct StartSell<'info> {
+pub struct SellNFT<'info> {
     #[account(mut)]
     pub seller: Signer<'info>,
 
@@ -80,7 +80,7 @@ pub struct StartSell<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-pub fn sell_handle(ctx: Context<StartSell>, price: u64) -> Result<()> {
+pub fn sell_nft_handle(ctx: Context<SellNFT>, price: u64) -> Result<()> {
     let now_ts = Clock::get().unwrap().unix_timestamp;
     let mut config = ctx.accounts.config.load_mut()?;
     let mut sell = ctx.accounts.sell.load_init()?;
