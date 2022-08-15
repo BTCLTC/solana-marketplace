@@ -34,7 +34,7 @@ export const sell = async (
   const price = new BN(Number(priceStr) * decimals);
 
   return await program.methods
-    .sell(price)
+    .sellNft(price)
     .accounts({
       seller: provider.wallet.publicKey,
       config,

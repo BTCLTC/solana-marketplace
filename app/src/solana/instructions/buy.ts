@@ -36,7 +36,7 @@ export const buy = async (
     : feeAccountPublicKey;
 
   return await program.methods
-    .buy()
+    .buyNft()
     .accounts({
       buyer: provider.wallet.publicKey,
       seller: new PublicKey(seller),
