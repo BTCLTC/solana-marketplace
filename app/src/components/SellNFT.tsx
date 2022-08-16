@@ -63,7 +63,7 @@ const SellNFT = ({ info, refreshNftList }: Props) => {
     }
     setTimeout(() => {
       refreshNftList();
-    }, 10000);
+    }, 18000);
   }, [info.mint, price, program, provider, refreshNftList]);
 
   return (

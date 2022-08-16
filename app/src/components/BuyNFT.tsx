@@ -162,7 +162,7 @@ const BuyNFT = ({ info, refreshNftList }: Props) => {
     refreshNftList();
     setTimeout(() => {
       getNftSell();
-    }, 6000);
+    }, 18000);
   }, [info.mint, price, program, provider, refreshNftList, getNftSell]);
 
   const renderInfo = useMemo(() => {
