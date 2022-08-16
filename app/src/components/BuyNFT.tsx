@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil';
 
 import { SOL_DECIMALS } from '../solana/utils/constant';
 import { appState } from '../stores';
-import { buy } from '../solana/instructions';
+import { buy, closeSell, updateSellPrice } from '../solana/instructions';
 import { INFT } from '../interface';
 import { formatTx } from '../utils';
 import { getSell } from '../solana/states/sell';
@@ -15,9 +15,10 @@ import placeholder from '../images/placeholder.jpg';
 
 type Props = {
   info: INFT;
+  refreshNftList: () => void;
 };
 
-const BuyNFT = ({ info }: Props) => {
+const BuyNFT = ({ info, refreshNftList }: Props) => {
   const { provider, program } = useRecoilValue(appState);
 
   const [loading, setLoading] = useState(false);
@@ -35,6 +36,10 @@ const BuyNFT = ({ info }: Props) => {
   });
 
   useEffect(() => {
+    getNftSell();
+  }, [program]);
+
+  const getNftSell = useCallback(() => {
     if (program) {
       getSell(info.seller || '', info.mint, program)
         .then((res) => {
@@ -45,7 +50,7 @@ const BuyNFT = ({ info }: Props) => {
           console.error(error);
         });
     }
-  }, [program]);
+  }, [info.mint, info.seller, program]);
 
   const isSelf = useMemo(() => {
     const pubKey = provider?.wallet.publicKey.toBase58();
@@ -86,8 +91,79 @@ const BuyNFT = ({ info }: Props) => {
           </a>
         </div>
       );
+      setSold(true);
     }
-  }, [info.mint, program, provider, info.seller]);
+    refreshNftList();
+  }, [info.mint, program, provider, info.seller, refreshNftList]);
+
+  const handleCancel = useCallback(async () => {
+    if (!provider || !program) {
+      toast.error('请先连接钱包，并切换到devnet网络');
+      return;
+    }
+    setLoading(true);
+    const tx = await closeSell(info.mint, provider, program).catch(
+      (error: any) => {
+        console.log(error);
+        console.log(error.logs);
+        setLoading(false);
+      }
+    );
+    setLoading(false);
+    if (tx) {
+      console.log(`tx: ${tx}`);
+      toast.success(
+        <div className="text-sm">
+          Tx:{' '}
+          <a
+            className="text-blue-500 cursor-pointer"
+            href={`https://solscan.io/tx/${tx}?cluster=devnet`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {formatTx(tx)}
+          </a>
+        </div>
+      );
+    }
+    refreshNftList();
+  }, [program, provider, info.mint, refreshNftList]);
+
+  const handleUpdate = useCallback(async () => {
+    if (!provider || !program) {
+      toast.error('请先连接钱包，并切换到devnet网络');
+      return;
+    }
+    setLoading(true);
+    const tx = await updateSellPrice(price, info.mint, provider, program).catch(
+      (error: any) => {
+        console.log(error);
+        console.log(error.logs);
+        setLoading(false);
+      }
+    );
+    setLoading(false);
+    if (tx) {
+      console.log(`tx: ${tx}`);
+      toast.success(
+        <div className="text-sm">
+          Tx:{' '}
+          <a
+            className="text-blue-500 cursor-pointer"
+            href={`https://solscan.io/tx/${tx}?cluster=devnet`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {formatTx(tx)}
+          </a>
+        </div>
+      );
+    }
+    refreshNftList();
+    setTimeout(() => {
+      getNftSell();
+    }, 6000);
+  }, [info.mint, price, program, provider, refreshNftList, getNftSell]);
 
   const renderInfo = useMemo(() => {
     if (isSold) {
@@ -101,29 +177,29 @@ const BuyNFT = ({ info }: Props) => {
       return (
         <>
           <button
-            className={`btn btn-active btn-error text-white ${
+            className={`btn btn-active btn-warning text-white ${
               loading ? 'loading' : ''
             }`}
             disabled={loading}
-            onClick={() => handleBuy()}
+            onClick={() => handleCancel()}
           >
             Cancel
           </button>
           <button
-            className={`btn btn-active btn-error text-white ${
+            className={`btn btn-active btn-info text-white ${
               loading ? 'loading' : ''
             }`}
-            disabled={loading}
-            onClick={() => handleBuy()}
+            disabled={loading || !price}
+            onClick={() => handleUpdate()}
           >
-            Edit
+            Update
           </button>
         </>
       );
     }
     return (
       <button
-        className={`btn btn-active btn-error text-white ${
+        className={`btn btn-active btn-accent text-white ${
           loading ? 'loading' : ''
         }`}
         disabled={loading}
@@ -132,7 +208,7 @@ const BuyNFT = ({ info }: Props) => {
         buy
       </button>
     );
-  }, [isSold, isSelf, loading, handleBuy]);
+  }, [isSold, isSelf, loading, handleBuy, price, handleUpdate, handleCancel]);
 
   return (
     <div className="card card-compact w-96 bg-base-100 shadow-xl my-6">

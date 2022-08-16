@@ -13,9 +13,10 @@ import placeholder from '../images/placeholder.jpg';
 
 type Props = {
   info: INFT;
+  refreshNftList: () => void;
 };
 
-const SellNFT = ({ info }: Props) => {
+const SellNFT = ({ info, refreshNftList }: Props) => {
   const { provider, program } = useRecoilValue(appState);
 
   const [loading, setLoading] = useState(false);
@@ -60,7 +61,10 @@ const SellNFT = ({ info }: Props) => {
         </div>
       );
     }
-  }, [info.mint, price, program, provider]);
+    setTimeout(() => {
+      refreshNftList();
+    }, 10000);
+  }, [info.mint, price, program, provider, refreshNftList]);
 
   return (
     <div className="card card-compact w-96 bg-base-100 shadow-xl my-6">

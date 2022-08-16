@@ -1,7 +1,8 @@
-import axios from 'axios';
 import { getParsedNftAccountsByOwner } from '@nfteyez/sol-rayz';
+import { Metaplex } from '@metaplex-foundation/js';
 import { AnchorProvider } from '@project-serum/anchor';
 import marketNfts from '../../data/list.json';
+import { PublicKey } from '@solana/web3.js';
 
 export const loadAllNFTs = async (provider: AnchorProvider) => {
   try {
@@ -16,14 +17,25 @@ export const loadAllNFTs = async (provider: AnchorProvider) => {
   }
 };
 
-export const loadMarketNfts = async () => {
+export const loadMarketNfts = async (provider: AnchorProvider) => {
   let marketNFTs = [];
+  const mx = Metaplex.make(provider.connection);
   for (let item of marketNfts) {
-    const res = await axios.get(
-      `https://api.solscan.io/account?address=${item.mint}&cluster=devnet`
-    );
+    const nft = await mx.nfts().findByMint(new PublicKey(item.mint)).run();
     marketNFTs.push({
-      ...res?.data?.data?.metadata,
+      data: {
+        creators: nft.creators,
+        name: nft.name,
+        symbol: nft.symbol,
+        uri: nft.uri,
+        sellerFeeBasisPoints: nft.sellerFeeBasisPoints,
+      },
+      editionNonce: nft.editionNonce,
+      isMutable: nft.isMutable,
+      key: 0,
+      mint: item.mint,
+      primarySaleHappened: nft.primarySaleHappened,
+      updateAuthority: nft.updateAuthorityAddress.toBase58(),
       seller: item.seller,
     });
   }

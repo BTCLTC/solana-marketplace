@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { m } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import SellNFT from '../components/SellNFT';
@@ -15,6 +15,10 @@ const Sell: NextPage = () => {
   const [nfts, setNfts] = useState<INFT[]>([]);
 
   useEffect(() => {
+    getNftSellList();
+  }, [provider]);
+
+  const getNftSellList = useCallback(() => {
     if (provider) {
       loadAllNFTs(provider).then((data) => {
         if (data) {
@@ -30,7 +34,7 @@ const Sell: NextPage = () => {
       className="container flex flex-wrap justify-between"
     >
       {nfts.map((item) => (
-        <SellNFT key={item.mint} info={item} />
+        <SellNFT key={item.mint} info={item} refreshNftList={getNftSellList} />
       ))}
     </m.section>
   );
