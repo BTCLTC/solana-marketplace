@@ -3,10 +3,10 @@ use anchor_lang::prelude::*;
 #[account(zero_copy)]
 #[derive(Default)]
 pub struct Sell {
-    pub order_id: u64,
     pub seller: Pubkey,
     pub nft_mint: Pubkey,
     pub nft_vault: Pubkey,
+    pub order_id: u64,
     pub price: u64,
     pub created_at: u64,
     pub updated_at: u64,

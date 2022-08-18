@@ -9,8 +9,8 @@ pub struct Config {
     pub fee_rate: u64,
     pub order_id: u64,
     pub order_count: u64,
-    pub freeze: bool,
     pub bump: u8,
+    pub freeze: bool,
 }
 
 impl Config {
