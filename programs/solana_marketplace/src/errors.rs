@@ -12,7 +12,13 @@ pub enum ErrorCode {
     InvalidRequestError,
 
     #[msg("The sum of shares is not 100")]
-    InvalidShares,
+    InvalidSharesSum,
+
+    #[msg("Invalid share address")]
+    InvalidSharesPubkey,
+
+    #[msg("The pubkey is missing")]
+    PubkeyMiss,
 
     #[msg("Metadata doesn't exist")]
     MetadataNotExist,

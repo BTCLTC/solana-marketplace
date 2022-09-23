@@ -8,6 +8,7 @@ use solana_program::{program::invoke, system_instruction::transfer, sysvar::rent
 
 use crate::{
     constants::{CONFIG_PDA_SEED, NFT_VAULT_PDA_SEED, SELL_PDA_SEED},
+    errors::ErrorCode,
     states::{Config, Sell},
     validate::verify_metadata,
 };
@@ -88,9 +89,6 @@ pub struct BuyNFT<'info> {
     )]
     pub sell: AccountLoader<'info, Sell>,
 
-    /// CHECK: This is not dangerous because we don't read or write from this account
-    pub share_address: Vec<AccountInfo<'info>>,
-
     /// used by anchor for init of the token
     #[account(address = system_program::ID)]
     pub system_program: Program<'info, System>,
@@ -103,6 +101,9 @@ pub struct BuyNFT<'info> {
 
     #[account(address = rent::ID)]
     pub rent: Sysvar<'info, Rent>,
+
+    // Remaining accounts
+    // share_address
 }
 
 pub fn buy_nft_handler(ctx: Context<BuyNFT>) -> Result<()> {
@@ -125,7 +126,7 @@ pub fn buy_nft_handler(ctx: Context<BuyNFT>) -> Result<()> {
         // Payment to shares
         for (index, item) in creators.iter().enumerate() {
             if item.share > 0 {
-                let lamports = total_seller_fee_basis_points
+                let fee = total_seller_fee_basis_points
                     .checked_mul(item.share as u128)
                     .unwrap()
                     .checked_div(100)
@@ -133,14 +134,22 @@ pub fn buy_nft_handler(ctx: Context<BuyNFT>) -> Result<()> {
                     .try_into()
                     .unwrap();
 
-                invoke(
-                    &transfer(&ctx.accounts.buyer.key(), &item.address, lamports),
-                    &[
-                        ctx.accounts.buyer.to_account_info(),
-                        item.address.to_account_info(),
-                        ctx.accounts.system_program.to_account_info(),
-                    ],
-                )?;
+                let share_account_info_result = ctx.remaining_accounts.get(index);
+
+                if let Some(share_account_info) = share_account_info_result {
+                    require!(share_account_info.key() == item.address, ErrorCode::InvalidSharesPubkey);
+
+                    invoke(
+                        &transfer(&ctx.accounts.buyer.key(), &item.address, fee),
+                        &[
+                            ctx.accounts.buyer.to_account_info(),
+                            share_account_info.to_account_info(),
+                            ctx.accounts.system_program.to_account_info(),
+                        ],
+                    )?;
+                } else {
+                    return err!(ErrorCode::PubkeyMiss);
+                }
             }
         }
     }

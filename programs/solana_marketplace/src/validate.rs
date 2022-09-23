@@ -58,7 +58,7 @@ pub fn verify_metadata(creators: &[Creator]) -> Result<()> {
     let sum: u8 = creators.iter().map(|x| x.share).sum();
 
     if sum != 100 {
-        return err!(ErrorCode::InvalidShares);
+        return err!(ErrorCode::InvalidSharesSum);
     }
 
     Ok(())
