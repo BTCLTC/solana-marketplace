@@ -5,15 +5,15 @@
 ```toml
 # 本地网络合约地址
 [programs.localnet]
-gamefi = "NFTMTNtLozbwJzvLDcdp2qRSgm4tKHxo2eu4cD3nC9y"
+solana_marketplace = "NFTMTNtLozbwJzvLDcdp2qRSgm4tKHxo2eu4cD3nC9y"
 
 # 测试网络合约地址
 [programs.devnet]
-gamefi = "NFTMTNtLozbwJzvLDcdp2qRSgm4tKHxo2eu4cD3nC9y"
+solana_marketplace = "NFTMTNtLozbwJzvLDcdp2qRSgm4tKHxo2eu4cD3nC9y"
 
 # 主网络合约地址
 [programs.mainnet]
-gamefi = "NFTMTNtLozbwJzvLDcdp2qRSgm4tKHxo2eu4cD3nC9y"
+solana_marketplace = "NFTMTNtLozbwJzvLDcdp2qRSgm4tKHxo2eu4cD3nC9y"
 
 [provider]
 # 网络（localnet、devnet、mainnet）
