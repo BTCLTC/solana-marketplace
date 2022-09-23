@@ -3,11 +3,13 @@ use anchor_spl::{
     associated_token::AssociatedToken,
     token::{self, Mint, Token, TokenAccount},
 };
+use mpl_token_metadata::state::{Metadata, TokenMetadataAccount};
 use solana_program::{program::invoke, system_instruction::transfer, sysvar::rent};
 
 use crate::{
     constants::{CONFIG_PDA_SEED, NFT_VAULT_PDA_SEED, SELL_PDA_SEED},
     states::{Config, Sell},
+    validate::verify_metadata,
 };
 
 #[event]
@@ -86,6 +88,9 @@ pub struct BuyNFT<'info> {
     )]
     pub sell: AccountLoader<'info, Sell>,
 
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    pub share_address: Vec<AccountInfo<'info>>,
+
     /// used by anchor for init of the token
     #[account(address = system_program::ID)]
     pub system_program: Program<'info, System>,
@@ -104,7 +109,43 @@ pub fn buy_nft_handler(ctx: Context<BuyNFT>) -> Result<()> {
     let mut config = ctx.accounts.config.load_mut()?;
     let sell = &mut ctx.accounts.sell.load()?;
 
-    // Payment
+    let metadata: Metadata = Metadata::from_account_info(&ctx.accounts.nft_mint.to_account_info())?;
+
+    let mut total_seller_fee_basis_points: u128 = 0;
+
+    if let Some(creators) = &metadata.data.creators {
+        verify_metadata(creators)?;
+
+        total_seller_fee_basis_points = (sell.price as u128)
+            .checked_mul(metadata.data.seller_fee_basis_points as u128)
+            .unwrap()
+            .checked_div(10000)
+            .unwrap();
+
+        // Payment to shares
+        for (index, item) in creators.iter().enumerate() {
+            if item.share > 0 {
+                let lamports = total_seller_fee_basis_points
+                    .checked_mul(item.share as u128)
+                    .unwrap()
+                    .checked_div(100)
+                    .unwrap()
+                    .try_into()
+                    .unwrap();
+
+                invoke(
+                    &transfer(&ctx.accounts.buyer.key(), &item.address, lamports),
+                    &[
+                        ctx.accounts.buyer.to_account_info(),
+                        item.address.to_account_info(),
+                        ctx.accounts.system_program.to_account_info(),
+                    ],
+                )?;
+            }
+        }
+    }
+
+    // Payment Platform service charge
     let mut fee: u64 = 0;
 
     if config.fee_rate > 0 {
@@ -117,15 +158,17 @@ pub fn buy_nft_handler(ctx: Context<BuyNFT>) -> Result<()> {
             .unwrap();
     }
 
-    let price: u64 = (sell.price as u128)
+    let seller_receive_amount: u64 = (sell.price as u128)
         .checked_sub(fee as u128)
+        .unwrap()
+        .checked_sub(total_seller_fee_basis_points)
         .unwrap()
         .try_into()
         .unwrap();
 
     // send lamports to seller
     invoke(
-        &transfer(&ctx.accounts.buyer.key(), &ctx.accounts.seller.key(), price),
+        &transfer(&ctx.accounts.buyer.key(), &ctx.accounts.seller.key(), seller_receive_amount),
         &[
             ctx.accounts.buyer.to_account_info(),
             ctx.accounts.seller.to_account_info(),
@@ -194,7 +237,7 @@ pub fn buy_nft_handler(ctx: Context<BuyNFT>) -> Result<()> {
         nft_mint: ctx.accounts.nft_mint.key(),
         nft_vault: ctx.accounts.nft_vault.key(),
         buyer_nft_vault: ctx.accounts.buyer_nft_vault.key(),
-        price,
+        price: sell.price,
         created_at: now_ts as u64,
     });
     Ok(())

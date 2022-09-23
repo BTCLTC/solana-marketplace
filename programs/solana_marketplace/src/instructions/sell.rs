@@ -1,11 +1,12 @@
 use anchor_lang::{prelude::*, system_program};
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
+use mpl_token_metadata::state::{Metadata, TokenMetadataAccount};
 use solana_program::sysvar::rent;
 
 use crate::{
     constants::{NFT_VAULT_PDA_SEED, SELL_PDA_SEED, CONFIG_PDA_SEED},
     errors::ErrorCode,
-    states::{Config, Sell},
+    states::{Config, Sell}, validate::verify_metadata,
 };
 
 #[event]
@@ -86,6 +87,12 @@ pub fn sell_nft_handle(ctx: Context<SellNFT>, price: u64) -> Result<()> {
     let mut sell = ctx.accounts.sell.load_init()?;
 
     require!(price > 0, ErrorCode::InvalidTokenAmount);
+
+    let metadata: Metadata = Metadata::from_account_info(&ctx.accounts.nft_mint.to_account_info())?;
+
+    if let Some(creators) = &metadata.data.creators {
+        verify_metadata(creators)?;
+    }
 
     // LOCK NFT : Transfer nft to nft_vault PDA
     {

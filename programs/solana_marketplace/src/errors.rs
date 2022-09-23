@@ -11,29 +11,11 @@ pub enum ErrorCode {
     #[msg("Invalid Request")]
     InvalidRequestError,
 
-    #[msg("Not enough SOL")]
-    InsufficientSolAmountError,
-
-    #[msg("The amount is small than min price")]
-    InsufficientMinAmountError,
-
-    #[msg("IncorrectOwner")]
-    IncorrectOwner,
-
-    #[msg("Derived key invalid")]
-    DerivedKeyInvalid,
+    #[msg("The sum of shares is not 100")]
+    InvalidShares,
 
     #[msg("Metadata doesn't exist")]
     MetadataNotExist,
-
-    #[msg("PublicKeyMismatch")]
-    PublicKeyMismatch,
-
-    #[msg("UninitializedAccount")]
-    UninitializedAccount,
-
-    #[msg("No payer present on this txn")]
-    NoPayerPresent,
 
     #[msg("Invalid token amount")]
     InvalidTokenAmount,
