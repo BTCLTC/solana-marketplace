@@ -1,4 +1,4 @@
-use anchor_lang::{prelude::*, system_program};
+use anchor_lang::prelude::*;
 
 use crate::{states::Config, constants::CONFIG_PDA_SEED};
 
