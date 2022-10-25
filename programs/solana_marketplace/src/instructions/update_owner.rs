@@ -8,7 +8,7 @@ pub struct UpdateOwner<'info> {
     pub owner: Signer<'info>,
 
     /// CHECK: This is not dangerous because we don't read or write from this account
-    #[account[constraint = owner.key() != new_owner.key()]]
+    #[account(constraint = owner.key() != new_owner.key())]
     pub new_owner: AccountInfo<'info>,
 
     #[account(

@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use anchor_lang::{prelude::*, system_program};
 
 use crate::{states::Config, constants::CONFIG_PDA_SEED};
 
@@ -8,7 +8,9 @@ pub struct UpdateFeeAccount<'info> {
     pub owner: Signer<'info>,
 
     /// CHECK: This is not dangerous because we don't read or write from this account
-    #[account[constraint = config.load()?.fee_account.key() != fee_account.key()]]
+    #[account(
+        constraint = config.load()?.fee_account.key() != fee_account.key()
+    )]
     pub fee_account: AccountInfo<'info>,
 
     #[account(
