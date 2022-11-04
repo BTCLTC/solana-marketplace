@@ -1,5 +1,5 @@
 import { AnchorProvider, Program } from '@project-serum/anchor';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, SystemProgram } from '@solana/web3.js';
 
 import { findConfigAddress } from '../utils/accounts';
 import { SolanaMarketplace } from '../types/solana_marketplace';
@@ -17,6 +17,7 @@ export const updateFeeAccount = async (
       owner: provider.wallet.publicKey,
       feeAccount: new PublicKey(feeAccount),
       config,
+      systemProgram: SystemProgram.programId,
     })
     .rpc();
 };
