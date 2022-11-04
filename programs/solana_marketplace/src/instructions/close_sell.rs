@@ -3,7 +3,7 @@ use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use solana_program::sysvar::rent;
 
 use crate::{
-    constants::{NFT_VAULT_PDA_SEED, SELL_PDA_SEED, CONFIG_PDA_SEED},
+    constants::{CONFIG_PDA_SEED, NFT_VAULT_PDA_SEED, SELL_PDA_SEED},
     states::{Config, Sell},
 };
 
