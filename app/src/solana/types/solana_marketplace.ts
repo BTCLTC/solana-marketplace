@@ -12,7 +12,7 @@ export type SolanaMarketplace = {
         },
         {
           name: 'feeAccount';
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -58,13 +58,19 @@ export type SolanaMarketplace = {
         },
         {
           name: 'feeAccount';
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
           name: 'config';
           isMut: true;
           isSigner: false;
+        },
+        {
+          name: 'systemProgram';
+          isMut: false;
+          isSigner: false;
+          docs: ['used by anchor for init of the token'];
         }
       ];
       args: [];
@@ -381,12 +387,12 @@ export type SolanaMarketplace = {
             type: 'u64';
           },
           {
-            name: 'freeze';
-            type: 'bool';
-          },
-          {
             name: 'bump';
             type: 'u8';
+          },
+          {
+            name: 'freeze';
+            type: 'bool';
           }
         ];
       };
@@ -396,10 +402,6 @@ export type SolanaMarketplace = {
       type: {
         kind: 'struct';
         fields: [
-          {
-            name: 'orderId';
-            type: 'u64';
-          },
           {
             name: 'seller';
             type: 'publicKey';
@@ -411,6 +413,10 @@ export type SolanaMarketplace = {
           {
             name: 'nftVault';
             type: 'publicKey';
+          },
+          {
+            name: 'orderId';
+            type: 'u64';
           },
           {
             name: 'price';
@@ -618,7 +624,7 @@ export const IDL: SolanaMarketplace = {
         },
         {
           name: 'feeAccount',
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
@@ -664,13 +670,19 @@ export const IDL: SolanaMarketplace = {
         },
         {
           name: 'feeAccount',
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
           name: 'config',
           isMut: true,
           isSigner: false,
+        },
+        {
+          name: 'systemProgram',
+          isMut: false,
+          isSigner: false,
+          docs: ['used by anchor for init of the token'],
         },
       ],
       args: [],
@@ -987,12 +999,12 @@ export const IDL: SolanaMarketplace = {
             type: 'u64',
           },
           {
-            name: 'freeze',
-            type: 'bool',
-          },
-          {
             name: 'bump',
             type: 'u8',
+          },
+          {
+            name: 'freeze',
+            type: 'bool',
           },
         ],
       },
@@ -1002,10 +1014,6 @@ export const IDL: SolanaMarketplace = {
       type: {
         kind: 'struct',
         fields: [
-          {
-            name: 'orderId',
-            type: 'u64',
-          },
           {
             name: 'seller',
             type: 'publicKey',
@@ -1017,6 +1025,10 @@ export const IDL: SolanaMarketplace = {
           {
             name: 'nftVault',
             type: 'publicKey',
+          },
+          {
+            name: 'orderId',
+            type: 'u64',
           },
           {
             name: 'price',

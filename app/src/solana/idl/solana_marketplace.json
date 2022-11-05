@@ -12,7 +12,7 @@
         },
         {
           "name": "feeAccount",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -24,7 +24,9 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": ["used by anchor for init of the token"]
+          "docs": [
+            "used by anchor for init of the token"
+          ]
         },
         {
           "name": "tokenProgram",
@@ -58,13 +60,21 @@
         },
         {
           "name": "feeAccount",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "config",
           "isMut": true,
           "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "used by anchor for init of the token"
+          ]
         }
       ],
       "args": []
@@ -164,7 +174,9 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": ["used by anchor for init of the token"]
+          "docs": [
+            "used by anchor for init of the token"
+          ]
         },
         {
           "name": "tokenProgram",
@@ -211,7 +223,9 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": ["used by anchor for init of the token"]
+          "docs": [
+            "used by anchor for init of the token"
+          ]
         },
         {
           "name": "tokenProgram",
@@ -268,7 +282,9 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": ["used by anchor for init of the token"]
+          "docs": [
+            "used by anchor for init of the token"
+          ]
         },
         {
           "name": "tokenProgram",
@@ -330,7 +346,9 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": ["used by anchor for init of the token"]
+          "docs": [
+            "used by anchor for init of the token"
+          ]
         },
         {
           "name": "tokenProgram",
@@ -381,12 +399,12 @@
             "type": "u64"
           },
           {
-            "name": "freeze",
-            "type": "bool"
-          },
-          {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "freeze",
+            "type": "bool"
           }
         ]
       }
@@ -396,10 +414,6 @@
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "orderId",
-            "type": "u64"
-          },
           {
             "name": "seller",
             "type": "publicKey"
@@ -411,6 +425,10 @@
           {
             "name": "nftVault",
             "type": "publicKey"
+          },
+          {
+            "name": "orderId",
+            "type": "u64"
           },
           {
             "name": "price",
@@ -601,5 +619,8 @@
       "name": "InvalidTokenAmount",
       "msg": "Invalid token amount"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "NFTMCFJD7ACCQr29CXeyqgMJe2HhdQJBDEMpSfTcqCk"
+  }
 }

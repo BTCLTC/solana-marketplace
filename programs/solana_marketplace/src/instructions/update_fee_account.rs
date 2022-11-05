@@ -10,6 +10,7 @@ pub struct UpdateFeeAccount<'info> {
 
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(
+        mut,
         constraint = config.load()?.fee_account.key() != fee_account.key()
     )]
     pub fee_account: AccountInfo<'info>,
@@ -30,12 +31,12 @@ pub struct UpdateFeeAccount<'info> {
 pub fn update_fee_account_handler(ctx: Context<UpdateFeeAccount>) -> Result<()> {
     let fee_account = ctx.accounts.fee_account.to_account_info();
     if fee_account.lamports() == 0 {
-        // send 0.01 to fee_account
+        // send 0.001 to fee_account
         invoke(
             &transfer(
                 &ctx.accounts.owner.key(),
                 &ctx.accounts.fee_account.key(),
-                10000000,
+                1000000,
             ),
             &[
                 ctx.accounts.owner.to_account_info(),
