@@ -29,19 +29,22 @@ pub struct UpdateFeeAccount<'info> {
 }
 
 pub fn update_fee_account_handler(ctx: Context<UpdateFeeAccount>) -> Result<()> {
-    // send 0.001 to fee_account
-    invoke(
-        &transfer(
-            &ctx.accounts.owner.key(),
-            &ctx.accounts.fee_account.key(),
-            1000000,
-        ),
-        &[
-            ctx.accounts.owner.to_account_info(),
-            ctx.accounts.fee_account.to_account_info(),
-            ctx.accounts.system_program.to_account_info(),
-        ],
-    )?;
+    let fee_account = ctx.accounts.fee_account.to_account_info();
+    if fee_account.lamports() == 0 {
+        // send 0.001 to fee_account
+        invoke(
+            &transfer(
+                &ctx.accounts.owner.key(),
+                &ctx.accounts.fee_account.key(),
+                1000000,
+            ),
+            &[
+                ctx.accounts.owner.to_account_info(),
+                ctx.accounts.fee_account.to_account_info(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+        )?;
+    }
 
     let mut config = ctx.accounts.config.load_mut()?;
     config.fee_account = ctx.accounts.fee_account.key();
