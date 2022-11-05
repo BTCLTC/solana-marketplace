@@ -101,12 +101,11 @@ pub struct BuyNFT<'info> {
 
     #[account(address = rent::ID)]
     pub rent: Sysvar<'info, Rent>,
-
     // Remaining accounts
     // share_address
 }
 
-pub fn buy_nft_handler(ctx: Context<BuyNFT>) -> Result<()> {
+pub fn buy_nft_handler<'info>(ctx: Context<'_, '_, '_, 'info, BuyNFT<'info>>) -> Result<()> {
     let mut config = ctx.accounts.config.load_mut()?;
     let sell = &mut ctx.accounts.sell.load()?;
 
@@ -119,25 +118,28 @@ pub fn buy_nft_handler(ctx: Context<BuyNFT>) -> Result<()> {
 
         total_seller_fee_basis_points = (sell.price as u128)
             .checked_mul(metadata.data.seller_fee_basis_points as u128)
-            .unwrap()
+            .unwrap_or(0)
             .checked_div(10000)
-            .unwrap();
+            .unwrap_or(0);
 
         // Payment to shares
         for (index, item) in creators.iter().enumerate() {
             if item.share > 0 {
                 let fee = total_seller_fee_basis_points
                     .checked_mul(item.share as u128)
-                    .unwrap()
+                    .unwrap_or(0)
                     .checked_div(100)
-                    .unwrap()
+                    .unwrap_or(0)
                     .try_into()
-                    .unwrap();
+                    .unwrap_or(0);
 
                 let share_account_info_result = ctx.remaining_accounts.get(index);
 
                 if let Some(share_account_info) = share_account_info_result {
-                    require!(share_account_info.key() == item.address, ErrorCode::InvalidSharesPubkey);
+                    require!(
+                        share_account_info.key() == item.address,
+                        ErrorCode::InvalidSharesPubkey
+                    );
 
                     invoke(
                         &transfer(&ctx.accounts.buyer.key(), &item.address, fee),
@@ -160,30 +162,36 @@ pub fn buy_nft_handler(ctx: Context<BuyNFT>) -> Result<()> {
     if config.fee_rate > 0 {
         fee = (sell.price as u128)
             .checked_mul(config.fee_rate as u128)
-            .unwrap()
+            .unwrap_or(0)
             .checked_div(10000)
-            .unwrap()
+            .unwrap_or(0)
             .try_into()
-            .unwrap();
+            .unwrap_or(0);
     }
 
     let seller_receive_amount: u64 = (sell.price as u128)
         .checked_sub(fee as u128)
-        .unwrap()
+        .unwrap_or(0)
         .checked_sub(total_seller_fee_basis_points)
-        .unwrap()
+        .unwrap_or(0)
         .try_into()
-        .unwrap();
+        .unwrap_or(0);
 
-    // send lamports to seller
-    invoke(
-        &transfer(&ctx.accounts.buyer.key(), &ctx.accounts.seller.key(), seller_receive_amount),
-        &[
-            ctx.accounts.buyer.to_account_info(),
-            ctx.accounts.seller.to_account_info(),
-            ctx.accounts.system_program.to_account_info(),
-        ],
-    )?;
+    if seller_receive_amount > 0 {
+        // send lamports to seller
+        invoke(
+            &transfer(
+                &ctx.accounts.buyer.key(),
+                &ctx.accounts.seller.key(),
+                seller_receive_amount,
+            ),
+            &[
+                ctx.accounts.buyer.to_account_info(),
+                ctx.accounts.seller.to_account_info(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+        )?;
+    }
 
     if fee > 0 {
         // send lamports to fee_vault

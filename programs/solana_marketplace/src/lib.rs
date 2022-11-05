@@ -51,7 +51,7 @@ pub mod solana_marketplace {
     }
 
     #[access_control(buy_available(&ctx.accounts))]
-    pub fn buy_nft(ctx: Context<BuyNFT>) -> Result<()> {
+    pub fn buy_nft<'info>(ctx: Context<'_, '_, '_, 'info, BuyNFT<'info>>) -> Result<()> {
         buy_nft_handler(ctx)
     }
 }
