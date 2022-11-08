@@ -15,7 +15,7 @@ solana_marketplace = "NFTMCFJD7ACCQr29CXeyqgMJe2HhdQJBDEMpSfTcqCk"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "devnet"
+cluster = "https://metaplex.devnet.rpcpool.com"
 wallet = "keypair/NFT99UUrXCrtYfyAEgAnKPfh9sA3LtSP2sSDLmBW8UF.json"
 
 [scripts]

@@ -576,51 +576,28 @@
     },
     {
       "code": 6003,
-      "name": "InsufficientSolAmountError",
-      "msg": "Not enough SOL"
+      "name": "InvalidSharesSum",
+      "msg": "The sum of shares is not 100"
     },
     {
       "code": 6004,
-      "name": "InsufficientMinAmountError",
-      "msg": "The amount is small than min price"
+      "name": "InvalidSharesPubkey",
+      "msg": "Invalid share address"
     },
     {
       "code": 6005,
-      "name": "IncorrectOwner",
-      "msg": "IncorrectOwner"
+      "name": "PubkeyMiss",
+      "msg": "The pubkey is missing"
     },
     {
       "code": 6006,
-      "name": "DerivedKeyInvalid",
-      "msg": "Derived key invalid"
-    },
-    {
-      "code": 6007,
       "name": "MetadataNotExist",
       "msg": "Metadata doesn't exist"
     },
     {
-      "code": 6008,
-      "name": "PublicKeyMismatch",
-      "msg": "PublicKeyMismatch"
-    },
-    {
-      "code": 6009,
-      "name": "UninitializedAccount",
-      "msg": "UninitializedAccount"
-    },
-    {
-      "code": 6010,
-      "name": "NoPayerPresent",
-      "msg": "No payer present on this txn"
-    },
-    {
-      "code": 6011,
+      "code": 6007,
       "name": "InvalidTokenAmount",
       "msg": "Invalid token amount"
     }
-  ],
-  "metadata": {
-    "address": "NFTMCFJD7ACCQr29CXeyqgMJe2HhdQJBDEMpSfTcqCk"
-  }
+  ]
 }
