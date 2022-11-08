@@ -10,6 +10,7 @@ import {
 } from '../utils/accounts';
 import { SolanaMarketplace } from '../types/solana_marketplace';
 import { feeAccountPublicKey } from '../utils/constant';
+import { Metaplex } from '@metaplex-foundation/js';
 
 export const buy = async (
   seller: string,
@@ -35,6 +36,11 @@ export const buy = async (
   const feeAccount = feeAccountValue
     ? new PublicKey(feeAccountValue)
     : feeAccountPublicKey;
+
+  const mx = Metaplex.make(provider.connection);
+  const nft = await mx.nfts().findByMint(new PublicKey(nftMint)).run();
+  const creators = nft.creators;
+  console.log(creators);
 
   return await program.methods
     .buyNft()

@@ -599,5 +599,8 @@
       "name": "InvalidTokenAmount",
       "msg": "Invalid token amount"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "NFT51pLJ7BLm9U3yAcaAp6z3EoqnnvWBc7vHRYvsgi3"
+  }
 }
