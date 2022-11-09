@@ -1,6 +1,6 @@
 use anchor_lang::{prelude::*, system_program};
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
-use mpl_token_metadata::state::{Metadata, TokenMetadataAccount};
+use mpl_token_metadata::state::{Metadata, TokenMetadataAccount, PREFIX};
 use solana_program::sysvar::rent;
 
 use crate::{
@@ -37,6 +37,14 @@ pub struct SellNFT<'info> {
         constraint = nft_mint.decimals == 0
     )]
     pub nft_mint: Box<Account<'info, Mint>>,
+
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    #[account(
+        seeds = [PREFIX.as_bytes(), mpl_token_metadata::ID.as_ref(), nft_mint.key().as_ref()],
+        seeds::program = mpl_token_metadata::ID,
+        bump
+    )]
+    pub nft_metadata: AccountInfo<'info>,
 
     #[account(
         init,
@@ -89,7 +97,8 @@ pub fn sell_nft_handle(ctx: Context<SellNFT>, price: u64) -> Result<()> {
 
     require!(price > 0, ErrorCode::InvalidTokenAmount);
 
-    let metadata: Metadata = Metadata::from_account_info(&ctx.accounts.nft_mint.to_account_info())?;
+    let metadata: Metadata =
+        Metadata::from_account_info(&ctx.accounts.nft_metadata.to_account_info())?;
 
     if let Some(creators) = &metadata.data.creators {
         verify_metadata(creators)?;

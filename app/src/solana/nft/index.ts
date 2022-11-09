@@ -21,7 +21,9 @@ export const loadMarketNfts = async (provider: AnchorProvider) => {
   let marketNFTs = [];
   const mx = Metaplex.make(provider.connection);
   for (let item of marketNfts) {
-    const nft = await mx.nfts().findByMint(new PublicKey(item.mint)).run();
+    const nft = await mx
+      .nfts()
+      .findByMint({ mintAddress: new PublicKey(item.mint) });
     marketNFTs.push({
       data: {
         creators: nft.creators,

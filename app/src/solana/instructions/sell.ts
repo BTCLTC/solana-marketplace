@@ -5,6 +5,7 @@ import { getParsedAccountByMint } from '@nfteyez/sol-rayz';
 
 import {
   findConfigAddress,
+  findNftMetadataAddress,
   findSellAddress,
   findVaultAddress,
 } from '../utils/accounts';
@@ -17,6 +18,8 @@ export const sell = async (
   provider: AnchorProvider,
   program: Program<SolanaMarketplace>
 ) => {
+  const nftMetadata = await findNftMetadataAddress(new PublicKey(nftMint));
+
   const [config, _configBump] = await findConfigAddress();
   const [nftVault, _nftVaultBump] = await findVaultAddress(
     new PublicKey(nftMint)
@@ -39,6 +42,7 @@ export const sell = async (
       seller: provider.wallet.publicKey,
       config,
       nftMint: new PublicKey(nftMint),
+      nftMetadata,
       nftVault,
       userNftVault: userNftVault.pubkey,
       sell: sellAddress,

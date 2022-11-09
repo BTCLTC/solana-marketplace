@@ -1,5 +1,7 @@
+import { PublicKey } from "@solana/web3.js";
+
 interface ICrators {
-  address: string;
+  address: PublicKey;
   share: number;
   verified: boolean;
 }
@@ -15,7 +17,7 @@ interface IData {
 export interface INFT {
   data: IData;
   edition?: string;
-  editionNonce: number;
+  editionNonce: number | null;
   isMutable: boolean;
   key: number;
   masterEdition?: string;

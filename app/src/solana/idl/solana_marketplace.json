@@ -24,9 +24,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",
@@ -72,9 +70,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         }
       ],
       "args": []
@@ -156,6 +152,11 @@
           "isSigner": false
         },
         {
+          "name": "nftMetadata",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "nftVault",
           "isMut": true,
           "isSigner": false
@@ -174,9 +175,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",
@@ -223,9 +222,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",
@@ -282,9 +279,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",
@@ -323,6 +318,11 @@
           "isSigner": false
         },
         {
+          "name": "nftMetadata",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "nftVault",
           "isMut": true,
           "isSigner": false
@@ -346,9 +346,7 @@
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false,
-          "docs": [
-            "used by anchor for init of the token"
-          ]
+          "docs": ["used by anchor for init of the token"]
         },
         {
           "name": "tokenProgram",

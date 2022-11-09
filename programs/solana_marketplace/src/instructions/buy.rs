@@ -3,7 +3,7 @@ use anchor_spl::{
     associated_token::AssociatedToken,
     token::{self, Mint, Token, TokenAccount},
 };
-use mpl_token_metadata::state::{Metadata, TokenMetadataAccount};
+use mpl_token_metadata::state::{Metadata, TokenMetadataAccount, PREFIX};
 use solana_program::{program::invoke, system_instruction::transfer, sysvar::rent};
 
 use crate::{
@@ -50,6 +50,14 @@ pub struct BuyNFT<'info> {
         constraint = nft_mint.decimals == 0
     )]
     pub nft_mint: Box<Account<'info, Mint>>,
+
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    #[account(
+        seeds = [PREFIX.as_bytes(), mpl_token_metadata::ID.as_ref(), nft_mint.key().as_ref()],
+        seeds::program = mpl_token_metadata::ID,
+        bump
+    )]
+    pub nft_metadata: AccountInfo<'info>,
 
     #[account(
         mut,
@@ -101,15 +109,14 @@ pub struct BuyNFT<'info> {
 
     #[account(address = rent::ID)]
     pub rent: Sysvar<'info, Rent>,
-    // Remaining accounts
-    // share_address
 }
 
 pub fn buy_nft_handler<'info>(ctx: Context<'_, '_, '_, 'info, BuyNFT<'info>>) -> Result<()> {
     let mut config = ctx.accounts.config.load_mut()?;
     let sell = &mut ctx.accounts.sell.load()?;
 
-    let metadata: Metadata = Metadata::from_account_info(&ctx.accounts.nft_mint.to_account_info())?;
+    let metadata: Metadata =
+        Metadata::from_account_info(&ctx.accounts.nft_metadata.to_account_info())?;
 
     let mut total_seller_fee_basis_points: u128 = 0;
 
