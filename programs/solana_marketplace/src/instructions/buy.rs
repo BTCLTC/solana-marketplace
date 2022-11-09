@@ -164,10 +164,10 @@ pub fn buy_nft_handler<'info>(ctx: Context<'_, '_, '_, 'info, BuyNFT<'info>>) ->
     }
 
     // Payment Platform service charge
-    let mut fee: u64 = 0;
+    let mut platform_service_fee: u64 = 0;
 
     if config.fee_rate > 0 {
-        fee = (sell.price as u128)
+        platform_service_fee = (sell.price as u128)
             .checked_mul(config.fee_rate as u128)
             .unwrap_or(0)
             .checked_div(10000)
@@ -177,7 +177,7 @@ pub fn buy_nft_handler<'info>(ctx: Context<'_, '_, '_, 'info, BuyNFT<'info>>) ->
     }
 
     let seller_receive_amount: u64 = (sell.price as u128)
-        .checked_sub(fee as u128)
+        .checked_sub(platform_service_fee as u128)
         .unwrap_or(0)
         .checked_sub(total_seller_fee_basis_points)
         .unwrap_or(0)
@@ -200,13 +200,13 @@ pub fn buy_nft_handler<'info>(ctx: Context<'_, '_, '_, 'info, BuyNFT<'info>>) ->
         )?;
     }
 
-    if fee > 0 {
+    if platform_service_fee > 0 {
         // send lamports to fee_vault
         invoke(
             &transfer(
                 &ctx.accounts.buyer.key(),
                 &ctx.accounts.fee_account.key(),
-                fee,
+                platform_service_fee,
             ),
             &[
                 ctx.accounts.buyer.to_account_info(),

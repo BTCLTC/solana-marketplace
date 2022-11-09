@@ -23,7 +23,7 @@ const Home: NextPage = () => {
   const [config, setConfig] = useState<any>(null);
 
   const isAddress = useMemo(() => {
-    return input.length == 44;
+    return input.length == 43 || input.length == 44;
   }, [input]);
 
   const isRate = useMemo(() => {
