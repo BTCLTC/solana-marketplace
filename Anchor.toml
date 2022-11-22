@@ -3,13 +3,13 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-solana_marketplace = "NFT51pLJ7BLm9U3yAcaAp6z3EoqnnvWBc7vHRYvsgi3"
+solana_marketplace = "NFT2MKnHT4S2dha9VgWYYwSgYEBrT5YmfLitHsRiHdx"
 
 [programs.devnet]
-solana_marketplace = "NFT51pLJ7BLm9U3yAcaAp6z3EoqnnvWBc7vHRYvsgi3"
+solana_marketplace = "NFT2MKnHT4S2dha9VgWYYwSgYEBrT5YmfLitHsRiHdx"
 
 [programs.mainnet]
-solana_marketplace = "NFT51pLJ7BLm9U3yAcaAp6z3EoqnnvWBc7vHRYvsgi3"
+solana_marketplace = "NFT2MKnHT4S2dha9VgWYYwSgYEBrT5YmfLitHsRiHdx"
 
 [registry]
 url = "https://api.apr.dev"
